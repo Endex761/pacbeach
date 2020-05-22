@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+
+        <property name="hibernate.connection.url">jdbc:mysql://localhost/pacbeach?useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Rome&amp;useSSL=false</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">root</property>
+        <property name="show_sql">false</property>
+
+        <property name="hibernate.jdbc.batch_size">50</property>
+
+
+        <mapping class="com.pac.pacbeach.model.Utente"/>
+        <mapping class="com.pac.pacbeach.model.Prenotazione"/>
+    </session-factory>
+</hibernate-configuration>
