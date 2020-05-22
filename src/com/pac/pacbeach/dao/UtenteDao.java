@@ -28,6 +28,13 @@ public class UtenteDao extends Dao
         return (Utente) getOne(queryString, email);
     }
 
+    public static Utente getUtente(int idUtente) throws NoResultException
+    {
+        String queryString = "from Utente where idUtente = ?0";
+
+        return (Utente) getOne(queryString, idUtente);
+    }
+
     public static void aggiornaUtente(Utente utente)
     {
        update(utente);

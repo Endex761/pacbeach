@@ -39,16 +39,22 @@ public class Prenotazione
 
     @XmlTransient
     @ManyToOne
-    @JoinColumn(name="refUtente", nullable = false)
+    @JoinColumn(name = "refUtente", nullable = false)
     private Utente utente;
+
+    @Column(name = "refOmbrellone", nullable = false)
+    private int ombrellone;
 
     public Prenotazione(){}
 
-    public Prenotazione(Date orario, Boolean pagata, float costo)
+    public Prenotazione(Date orario, Boolean pagata, float costo, Utente utente, int idOmbrellone) //Ombrellone ombrellone
     {
         setOrario(orario);
         setPagata(pagata);
         setCosto(costo);
+        setUtente(utente);
+        effettuata = new Timestamp(System.currentTimeMillis());
+        ombrellone = idOmbrellone;
     }
 
     public String toXmlString()

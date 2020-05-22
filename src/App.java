@@ -1,5 +1,6 @@
 
 import com.pac.pacbeach.control.GestioneAccountControl;
+import com.pac.pacbeach.control.GestionePrenotazioneControl;
 import com.pac.pacbeach.model.Prenotazione;
 import com.pac.pacbeach.model.Utente;
 import com.pac.pacbeach.utils.Result;
@@ -12,10 +13,12 @@ public class App
 {
     public static void main(String[] args)
     {
-        Utente u = new Utente("simonpietroromeo2@gmail.com","Simon Pietro", "Romeo", "3278360803");
+        //Utente u = new Utente("simonpietroromeo2@gmail.com","Simon Pietro", "Romeo", "3278360803");
 
+        Result r2 =GestionePrenotazioneControl.creaNuovaPrenotazione("Bu","true", "8", "1");
 
-        Result r = GestioneAccountControl.creaNuovoUtente("simonpietroromeo3@gmail.com","Simon Pietro", "Romeo", "3278360803");
+        System.out.println(r2.toXmlString());
+        //Result r = GestioneAccountControl.creaNuovoUtente("simonpietroromeo3@gmail.com","Simon Pietro", "Romeo", "3278360803");
 
         //System.out.println(u.toXmlString());
 
