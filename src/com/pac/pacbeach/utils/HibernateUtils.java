@@ -1,5 +1,7 @@
 package com.pac.pacbeach.utils;
 
+import com.pac.pacbeach.model.Ombrellone;
+import com.pac.pacbeach.model.Prenotazione;
 import com.pac.pacbeach.model.Utente;
 
 import org.hibernate.HibernateError;
@@ -18,6 +20,8 @@ public class HibernateUtils
         Configuration config = new Configuration();
         config.configure("hibernate-config.xml");
         config.addAnnotatedClass(Utente.class);
+        config.addAnnotatedClass(Ombrellone.class);
+        config.addAnnotatedClass(Prenotazione.class);
         StandardServiceRegistry srvcReg = new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
         sessionFactory = config.buildSessionFactory();
     }

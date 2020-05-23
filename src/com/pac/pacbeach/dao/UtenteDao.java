@@ -1,18 +1,10 @@
 package com.pac.pacbeach.dao;
 
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
-import com.pac.pacbeach.exceptions.EmailNotFoundException;
 import com.pac.pacbeach.model.Utente;
-import com.pac.pacbeach.utils.HibernateUtils;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.exception.ConstraintViolationException;
 
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.util.List;
+
 
 public class UtenteDao extends Dao
 {

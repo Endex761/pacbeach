@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 
 @XmlRootElement(name = "prenotazione")
@@ -24,8 +24,11 @@ public class Prenotazione
     @Column(name = "idPrenotazione")
     private int idPrenotazione;
 
-    @Column(name = "orario", nullable = false)
-    private Date orario;
+    @Column(name = "orarioInizio", nullable = false)
+    private Timestamp orarioInizio;
+
+    @Column(name = "orarioFine", nullable = false)
+    private Timestamp orarioFine;
 
     @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "effettuata")
@@ -42,19 +45,23 @@ public class Prenotazione
     @JoinColumn(name = "refUtente", nullable = false)
     private Utente utente;
 
-    @Column(name = "refOmbrellone", nullable = false)
-    private int ombrellone;
+    @XmlTransient
+    @ManyToOne
+    @JoinColumn(name = "refOmbrellone", nullable = false)
+    private Ombrellone ombrellone;
 
     public Prenotazione(){}
 
-    public Prenotazione(Date orario, Boolean pagata, float costo, Utente utente, int idOmbrellone) //Ombrellone ombrellone
+    public Prenotazione(Timestamp orarioInizio, Timestamp orarioFine, Boolean pagata, float costo, Utente utente, Ombrellone ombrellone) //Ombrellone ombrellone
     {
-        setOrario(orario);
+        setOrarioInizio(orarioInizio);
+        setOrarioFine(orarioFine);
         setPagata(pagata);
         setCosto(costo);
         setUtente(utente);
+        setOmbrellone(ombrellone);
         effettuata = new Timestamp(System.currentTimeMillis());
-        ombrellone = idOmbrellone;
+
     }
 
     public String toXmlString()
@@ -78,12 +85,20 @@ public class Prenotazione
         this.idPrenotazione = idPrenotazione;
     }
 
-    public Date getOrario() {
-        return orario;
+    public Timestamp getOrarioInizio() {
+        return orarioInizio;
     }
 
-    public void setOrario(Date orario) {
-        this.orario = orario;
+    public void setOrarioInizio(Timestamp orarioInizio) {
+        this.orarioInizio = orarioInizio;
+    }
+
+    public Timestamp getOrarioFine() {
+        return orarioFine;
+    }
+
+    public void setOrarioFine(Timestamp orarioFine) {
+        this.orarioFine = orarioFine;
     }
 
     public Timestamp getEffettuata() {
@@ -108,5 +123,13 @@ public class Prenotazione
 
     public void setCosto(float costo) {
         this.costo = costo;
+    }
+
+    public Ombrellone getOmbrellone() {
+        return ombrellone;
+    }
+
+    public void setOmbrellone(Ombrellone ombrellone) {
+        this.ombrellone = ombrellone;
     }
 }

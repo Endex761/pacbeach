@@ -14,5 +14,6 @@
 
         <mapping class="com.pac.pacbeach.model.Utente"/>
         <mapping class="com.pac.pacbeach.model.Prenotazione"/>
+        <mapping class="com.pac.pacbeach.model.Ombrellone"/>
     </session-factory>
 </hibernate-configuration>
