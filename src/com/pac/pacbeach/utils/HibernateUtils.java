@@ -11,10 +11,12 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+//Classe per gestire le sessioni di connessione con il databse.
 public class HibernateUtils
 {
     private static SessionFactory sessionFactory;
 
+    //Inizializza una nuova factory per le sessioni.
     public static void initSessionFactory()
     {
         Configuration config = new Configuration();
@@ -26,6 +28,7 @@ public class HibernateUtils
         sessionFactory = config.buildSessionFactory();
     }
 
+    //Ottieni una sessione di connessione al database
     public static Session getSession()
     {
         if(sessionFactory == null)

@@ -4,12 +4,8 @@ import com.pac.pacbeach.utils.DateAdapter;
 import com.pac.pacbeach.utils.XmlConverter;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Date;
 import java.sql.Timestamp;
 
 @XmlRootElement(name = "prenotazione")
@@ -22,11 +18,13 @@ public class Prenotazione
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPrenotazione")
-    private int idPrenotazione;
+    private Integer idPrenotazione;
 
+    @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "orarioInizio", nullable = false)
     private Timestamp orarioInizio;
 
+    @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "orarioFine", nullable = false)
     private Timestamp orarioFine;
 
@@ -38,7 +36,7 @@ public class Prenotazione
     private Boolean pagata;
 
     @Column(name = "costo", nullable = false)
-    private float costo;
+    private Float costo;
 
     @XmlTransient
     @ManyToOne
@@ -77,11 +75,11 @@ public class Prenotazione
         this.utente = utente;
     }
 
-    public int getIdPrenotazione() {
+    public Integer getIdPrenotazione() {
         return idPrenotazione;
     }
 
-    public void setIdPrenotazione(int idPrenotazione) {
+    public void setIdPrenotazione(Integer idPrenotazione) {
         this.idPrenotazione = idPrenotazione;
     }
 
@@ -117,11 +115,11 @@ public class Prenotazione
         this.pagata = pagata;
     }
 
-    public float getCosto() {
+    public Float getCosto() {
         return costo;
     }
 
-    public void setCosto(float costo) {
+    public void setCosto(Float costo) {
         this.costo = costo;
     }
 

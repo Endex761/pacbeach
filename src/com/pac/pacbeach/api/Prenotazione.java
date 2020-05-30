@@ -16,8 +16,8 @@ import java.io.IOException;
 public class Prenotazione extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/xml");
+
         RequestValidator r = new RequestValidator(request);
-        System.out.println("Called");
         Result res = null;
 
         try
@@ -38,8 +38,25 @@ public class Prenotazione extends HttpServlet {
         response.getWriter().write(res.toXmlString());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("get called");
-        doPost(request,response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        response.setContentType("text/xml");
+
+        RequestValidator r = new RequestValidator(request);
+        Result res = null;
+
+        try
+        {
+            String orarioInizio = r.getParameter("orarioInizio");
+            String orarioFine = r.getParameter("orarioFine");
+
+            res = GestionePrenotazioneControl.elencoPrenotazioni(orarioInizio, orarioFine);
+        }
+        catch (ValidationException e)
+        {
+            res = new Result(e.getMessage(), false);
+        }
+
+        response.getWriter().write(res.toXmlString());
     }
 }

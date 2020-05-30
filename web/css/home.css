@@ -1,0 +1,109 @@
+html {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-image: url("../img/beach.jpg");
+
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.right {
+    float: right;
+    margin-right: 20px;
+}
+
+h2 {
+    margin-top: 3%;
+}
+
+.info {
+    margin-top: 5%;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+.column {
+    float: left;
+    width: 30%;
+    margin-top: 64px;
+    margin-bottom: 32px;
+    margin-left: 32px;
+    padding: 0 64px;
+}
+
+@media screen and (max-width: 650px) {
+    .column {
+        width: 100%;
+        display: block;
+    }
+}
+
+.card {
+    box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.7);
+}
+
+.cardcontainer {
+    padding: 0 16px;
+}
+
+.container::after, .row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.cardbutton {
+    border: none;
+    outline: 0;
+    display: inline-block;
+    padding: 8px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 5%;
+}
+
+.cardbutton:hover {
+    background-color: #555;
+    color: white;
+    text-decoration: none;
+}
+
+.modal-content{
+    background-color: transparent; 
+    border: none;
+}
+
+.modal-footer {
+    background-color: #F1F2F6;
+}
+
+input{
+    border: none;
+    background-color: transparent;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+.form-control {
+    border: none;
+}

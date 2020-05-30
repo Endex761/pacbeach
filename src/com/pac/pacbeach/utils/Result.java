@@ -1,12 +1,15 @@
 package com.pac.pacbeach.utils;
 
+import com.pac.pacbeach.model.Ombrellone;
+import com.pac.pacbeach.model.Prenotazione;
 import com.pac.pacbeach.model.Utente;
+import com.pac.pacbeach.model.wrapper.WrapperArrayList;
 
 import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({Utente.class})
+@XmlSeeAlso({Utente.class, Prenotazione.class, Ombrellone.class, WrapperArrayList.class})
 public class Result
 {
     private static final long serialVersionUID = 1L;
@@ -61,6 +64,11 @@ public class Result
     public Object getContent()
     {
         return content;
+    }
+
+    public void setContent(Object content)
+    {
+        this.content = content;
     }
 
     public String toXmlString()

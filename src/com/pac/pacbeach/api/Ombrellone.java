@@ -1,6 +1,6 @@
 package com.pac.pacbeach.api;
 
-import com.pac.pacbeach.control.GestioneAccountControl;
+import com.pac.pacbeach.control.GestioneOmbrelloniControl;
 import com.pac.pacbeach.exceptions.ValidationException;
 import com.pac.pacbeach.utils.RequestValidator;
 import com.pac.pacbeach.utils.Result;
@@ -12,34 +12,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/api/registrazione")
-public class Registrazione extends HttpServlet {
+@WebServlet("/api/ombrellone")
+public class Ombrellone extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/xml");
-        RequestValidator r = new RequestValidator(request);
 
+        RequestValidator rv = new RequestValidator(request);
         Result res = null;
-
         try
         {
-            String email = r.getParameter("email");
-            String password = r.getParameter("password");
-            String nome = r.getParameter("nome");
-            String cognome = r.getParameter("cognome");
-            String telefono = r.getParameter("telefono");
+            String orarioInizio = rv.getParameter("orarioInizio");
+            String orarioFine = rv.getParameter("orarioFine");
 
-            res = GestioneAccountControl.creaNuovoUtente(email, password, nome, cognome, telefono);
+            res = GestioneOmbrelloniControl.statoOmbrelloni(orarioInizio, orarioFine);
         }
         catch (ValidationException e)
         {
             res = new Result(e.getMessage(), false);
         }
 
-
         response.getWriter().write(res.toXmlString());
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
     }
 }

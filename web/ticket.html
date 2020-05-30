@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+    <head>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Font-awesome for icons -->
+        <script src="https://kit.fontawesome.com/89a6b8d154.js" crossorigin="anonymous"></script>
+
+        <!-- Style -->
+        <link rel="stylesheet" href="css/ticket.css">
+
+        <title>PaC_Beach</title>
+        
+		<script>
+			//Set tomorrow as first selectable data
+			function setMinData() {
+				var today = new Date();
+				var d = today.getDate() + 1;
+				var m = today.getMonth()+1; //Inizia da 0
+				var y = today.getFullYear();
+				
+				if (d < 10) {
+					d = '0' + d;
+				} 
+				
+				if (m < 10) {
+					m = '0' + m;
+				} 
+
+				var tomorrow = y + '-' + m + '-' + d;
+				document.getElementById("date").setAttribute("min", tomorrow);
+			}
+		</script>
+    </head>
+
+    <body onload="setMinData()">
+
+        <!-- Logo -->
+        <div class="container">
+            <a href="./home.html"><img src="img/logo.png" alt="Logo" class="mx-auto d-block"></a>
+        </div>
+
+        <!-- Cards -->
+        <div class="container mt-3 mb-4">
+            <div class="card text-center">
+
+                <!-- Info -->
+                <div class="container mt-4">
+                    <p class="info">Goditi in sicurezza una delle migliori spiaggie d'Italia!</p>
+                    <ul class="list-unstyled info">
+                        <li>Tariffa oraria: €2</li>
+                        <li>Mezza giornata: €8</li>
+                        <li>Intera giornata: €15</li>
+                    </ul>
+                </div>
+                
+                <form id="dt" action="/api/info" method="GET">
+                    <!-- Select Data -->
+                    <div class="container mt-4">
+                        <h4>Scegli data ed ora</h4>
+                    </div>
+
+                    <div class="form-group container mt-2" style="padding-right: 10%; padding-left: 10%;">
+                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" min="" required>
+                    </div>
+
+                    <!-- Select Hours -->
+                    <div class="form-group container mt-4">
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()" checked> Intera giornata - 8:00/20:00
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()"> Mattina - 8:00/14:00
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()"> Pomeriggio - 14:00/20:00
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" id="customTime" onclick="unlockCustom()"> Fascia oraria personalizzata
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group container mt-2">
+                        <label for="start">Dalle:</label>
+                        <input type="time" name="start" id="start" min="08:00" max="19:00" step="3600" pattern="[0-2][0-9]:00" onkeyup="setMinEnd()" onclick="setMinEnd()" disabled>
+
+                        <label for="end">Alle:</label>
+                        <input type="time" name="end" id="end" min="9:00" max="20:00" step="3600" pattern="[0-2][0-9]:00" disabled>
+                    </div>
+
+                    <div class="container mt-4 mb-4">
+                        <button class="btn btn-info" type="submit">Verifica disponibilità</button>
+                    </div>
+                </form>
+
+                <form id="ticket" action="/ticket" method="POST">
+                    <!-- Select Seats -->
+                    <div class="container mt-4">
+                        <h4>Seleziona i tuoi posti</h4>
+                    </div>
+
+                    <div class="card mt-3 mx-auto" style="width: 90%; border: 0px;">
+                        <div class="card-header" style="background-color: #00b4d8;"></div>
+
+                        <div class="form-group card-body" style="background-color: #ffd66d;">
+                            <div class="container">
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="1" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="2" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="3" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="4" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="5" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="6" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="7" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="8" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="9" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="10" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="11" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="12" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="13" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="14" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="15" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="16" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="17" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="18" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="19" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="20" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="21" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="22" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="23" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" value="24" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Guests -->
+                    <div class="container mt-4">
+                        <h4>Ospiti</h4>
+                    </div>
+
+                    <div class="form-group mt-4" id="guests" style="padding-right: 10%; padding-left: 10%;">
+                        <label for="guest1">Inserisci Nome e Cognome di tutte le persone che verranno con te:</label>
+                        <input id="guest1" class="form-control" placeholder="Ospite 1" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$"></textarea>
+                    </div>
+
+                    <div class="container mt-1">
+                        <button class="btn btn-success" onclick="addGuest()"><i class="fas fa-plus"></i></button>
+                    </div>
+
+                    <!-- Confirm/Error message -->
+                    <div id="bookingconfmessage"></div>
+
+                    <!-- Confirm -->
+                    <div class="container mt-4 mb-4">
+                        <div class="row">
+                            <div class="col-sm">
+                                <button class="btn btn-info" data-toggle="modal" data-target="#pay">Conferma e paga ora</button>
+                            </div>
+                            <div class="col-sm">
+                                <button class="btn btn-info" type="submit">Conferma e paga al lido</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment modal -->
+                    <div class="modal fade" id="pay">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title mx-auto">Pagamento</h4>
+                                </div>
+                                
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <label for = "intestatario"> Intestatario Carta </label>
+                                        <input id="intestatario" type="text" class="form-control" placeholder="Intestatario carta" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$" required>
+                                    </div>
+
+                                    <div class="container mt-3">
+                                        <label for = "numeroCarta"> Numero Carta </label>
+                                        <input id="numeroCarta" type="number" class="form-control" placeholder="Numero carta" pattern="^[0-9]{16}$" required>
+                                    </div>
+
+                                    <div class="container mt-3">
+                                        <label for = "dataScadenza"> Data di scadenza </label>
+                                        <input id="dataScadenza" type="date" id="date" class="form-control" placeholder="Data di scadenza" min="" required>
+                                    </div>
+
+                                    <div class="container mt-3">
+                                        <label for = "cvv"> CVV </label>
+                                        <input id="cvv" type="number" class="form-control" placeholder="CVV" pattern="^[0-9]{3}$" required>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button class="btn btn-info" id="conf" type="submit">Paga</button>
+                                    </div>
+                                </div>
+
+                                <!--Footer-->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-info ml-auto" data-dismiss="modal">Chiudi</button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            //Unlock custom time selector if the relative radio is checked
+            function unlockCustom() {
+                if(document.getElementById('customTime').checked) {
+                    document.getElementById('start').disabled = false;
+                    document.getElementById('end').disabled = false;
+                } else {
+                    document.getElementById('start').disabled = true;
+                    document.getElementById('end').disabled = true;
+                }
+            }
+
+            //Set min end time selector as (start time + 1h)
+            function setMinEnd() {
+                var startInput = document.getElementById('start').value;
+                var minEndHoursI = parseInt(startInput.substr(0,2)) + 1;
+                var minEndHours = minEndI.toString();
+                var minEnd = minEndHours + ':00';
+
+                if(minEndHoursI < 10) {
+                    minEnd = '0' + minEnd;
+                }
+
+                document.getElementById('end').setAttribute("min", minEnd);
+            }
+
+            //Add another guest field when the button is clicked
+            var guestCounter = 2;
+            function addGuest() {
+                if(document.getElementById("guest1").value != "") {
+                    event.preventDefault();
+
+                    var i = document.createElement("input");
+                    i.setAttribute("class", "form-control mt-1");
+                    i.setAttribute("placeholder", "Ospite");
+                    i.setAttribute("pattern", "^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$");
+
+                    var element = document.getElementById("guests");
+                    element.appendChild(i);
+                }
+            }
+        </script>
+
+        <script>
+            //Submit date/time form TO DO
+            $(function() {
+                var form = $('#dt');
+
+                $(form).submit(function(event) {
+                    event.preventDefault();
+
+                    var formData = $(form).serialize();
+
+                    $.ajax({
+                        type: 'GET',
+                        url: $(form).attr('action'),
+                        data: formData,
+                        success: function(xml) {
+                            
+                        },
+                        error: function(data) {
+                            if (data.responseText !== '') {
+                                alert(data.responseText);
+                            } else {
+                                alert('Oops! Errore inaspettato!');
+                            }
+                        }
+                    });
+                });
+            })
+        </script>
+
+        <script>
+            var seats = [];
+
+            function selectSeat(b) {
+                if(b.getAttribute("class") == "btn btn-success") {
+                    b.setAttribute("class", "btn btn-outline-success");
+
+                    seats.push(b.getAttribute("value"));
+                    console.log(seats);
+                } else {
+                    b.setAttribute("class", "btn btn-success");
+
+                    var i = seats.indexOf(b.getAttribute("value"));
+                    seats.splice(i, 1);
+                    console.log(seats);
+                }
+            }
+
+            //Submit booking form
+            $(function() {
+                var form = $('#ticket');
+                var formMessages = $('#bookingconfmessage');
+
+                $(form).submit(function(event) {
+                    event.preventDefault();
+
+                    var formData = $(form).serialize();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: $(form).attr('action'),
+                        data: formData,
+                        success: function(xml) {
+                            if(xml.find('success') == "true") {
+                                $('#usrIcon').attr('data-target', '#');
+
+                                if(xml.find('message') == "utente") {
+                                    $('#usrButtom').attr('href', './user.html');
+                                    $('#signinup').modal('toggle');
+                                } else if(xml.find('message') == "amministratore") {
+                                    window.location.replace('./admin.html');
+                                } else if(xml.find('message') == "bagnino") {
+                                    window.location.replace('./lifeguard.html');
+                                } else if(xml.find('message') == "cassiere") {
+                                    window.location.replace('./cashier.html');
+                                }
+                            }
+                        },
+                        error: function(data) {
+                            // Make sure that the formMessages div has the 'error' class.
+                            $(formMessages).removeClass('success');
+                            $(formMessages).addClass('error');
+
+                            // Set the message text.
+                            if (data.responseText !== '') {
+                                $(formMessages).text(data.responseText);
+                            } else {
+                                $(formMessages).text('Oops! Errore inaspettato!');
+                            }
+                        }
+                    });
+                });
+            })
+        </script>
+    </body>
+</html>

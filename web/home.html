@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+    <head>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Font-awesome for icons -->
+        <script src="https://kit.fontawesome.com/89a6b8d154.js" crossorigin="anonymous"></script>
+
+        <!-- Style -->
+        <link rel="stylesheet" href="css/home.css">
+
+        <title>PaC_Beach</title>
+
+        <!-- Check if the user is logged -->
+        <script>
+            $(document).ready(function() {
+                $.ajax({
+                    type: 'GET',
+                    url: './api/login',
+                    dataType: 'text xml',
+                    success: function(xml) {
+                        xml = $(xml);
+                        var succ = xml.find('success').text();
+                        var message = xml.find('message').text();
+
+                        if(succ == "true") {
+                            $('#usrIcon').attr('data-target', '#');
+
+                            if(message == "utente") {
+                                $('#usrButtom').attr('href', './user.html');
+                            } else if(message == "amministratore") {
+                                window.location.replace('./admin.html');
+                            } else if(message == "bagnino") {
+                                window.location.replace('./lifeguard.html');
+                            } else if(message == "cassiere") {
+                                window.location.replace('./cashier.html');
+                            }
+                        }
+                    },
+                    error: function(data) {
+                        // Make sure that the formMessages div has the 'error' class.
+                        $(formMessages).attr('style', 'color: red');
+                        $(formMessages).text('Oops! Errore inaspettato!');
+                    }
+                })
+            })
+        </script>
+    </head>
+
+    <body>
+        <!-- Logo -->
+        <div class="container">
+            <a href="./home.html"><img src="img/logo.png" alt="Logo" class="mx-auto d-block"></a>
+        </div>
+
+        <!-- User -->
+        <div class="row right"> 
+            <a id="usrButtom">
+                <i id="usrIcon" class="fas fa-user fa-2x" data-toggle="modal" data-target="#signinup"></i>
+            </a>
+        </div>
+
+        <!-- Cards -->
+        <div class="container-fluid">
+
+            <div class="row">
+                <!-- Tickets -->
+                <div class="column">
+                    <div class="card">
+                        <img src="img/biglietteria.jpg" alt="Biglietteria" style="width:100%">
+                        <div class="cardcontainer">
+                            <h2>Biglietteria</h2>
+                            <p class="info">Goditi in sicurezza una delle migliori spiaggie d'Italia!</p>
+                            <ul>
+                                <li>Tariffa oraria: €2</li>
+                                <li>Mezza giornata: €8</li>
+                                <li>Intera giornata: €15</li>
+                            </ul>
+                            <p><a class="cardbutton" href="./ticket.html" role="button">Prenota</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bar -->
+                <div class="column">
+                    <div class="card">
+                        <img src="img/bar.jpg" alt="Bar" style="width:100%">
+                        <div class="cardcontainer">
+                            <h2>Bar</h2>
+                            <p class="info">Ordina snack e bevande comodamente dalla tua sdraio!</p>
+                            <p>Puoi richiedere che il tuo ordine venga consegnato direttamente al tavolo o se preferisci venire a ritirarlo.</p>
+                            <p><button class="cardbutton">Ordina</button></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="column">
+                    <div class="card">
+                        <img src="img/contatti.png" alt="Contatti" style="width:100%">
+                        <div class="cardcontainer">
+                            <h2>Contatti</h2>
+                            <ul class="list-unstyled info">
+                                <li>PaC_Beach</li>
+                                <li>Via Pluto 55</li>
+                                <li>Palermo - PA</li>
+                                <li>091 123456</li>
+                                <li>+39 123 4567890</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Modal: Login / Register Form-->
+        <div class="modal fade" id="signinup" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document" style="margin-top: 5%;">
+
+                <!--Content-->
+                <div class="modal-content">
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs justify-content-center" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#signin" role="tab"><i class="fas fa-user mr-1"></i>
+                            Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#signup" role="tab"><i class="fas fa-user-plus mr-1"></i>
+                            Registrazione</a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panels -->
+                    <div class="tab-content" style="background-color: white;">
+
+                        <!--Sign in-->
+                        <div class="tab-pane fade show active" id="signin" role="tabpanel">
+
+                            <!--Body-->
+                            <div class="modal-body mb-1 mt-3">
+                                <form id="sif" action="./api/login" method="POST">
+                                    <div class="form-group input-group mb-5">
+                                        <i class="fas fa-envelope fa-2x"></i>
+                                        <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
+                                    </div>
+
+                                    <div class="form-group input-group mb-4">
+                                        <i class="fas fa-lock fa-2x"></i>
+                                        <input type="password" name="password" id="passwordLogin" class="form-control" placeholder="Password" required>
+                                    </div>
+
+                                    <!-- Confirm/Error message -->
+                                    <div id="siconfmessage"></div>
+
+                                    <div class="text-center mt-2">
+                                        <button class="btn btn-info" type="submit">Log in</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!--Footer-->
+                            <div class="modal-footer">
+                                <div class="text-center text-md-right mt-1">
+                                    <p><a href="#" class="blue-text">Password dimenticata?</a></p>
+                                </div>
+
+                                <button type="button" class="btn btn-outline-info ml-auto" data-dismiss="modal">Chiudi</button>
+                            </div>
+                        </div>
+
+                        <!--Sign up-->
+                        <div class="tab-pane fade" id="signup" role="tabpanel">
+
+                            <!--Body-->
+                            <div class="modal-body mb-1 mt-3">
+                                <form id="suf" action="./api/registrazione" method="POST">
+                                    <div class="form-group input-group mb-5">
+                                        <i class="fas fa-signature fa-2x"></i>
+                                        <input type="text" name="nome" id="name" class="form-control" placeholder="Nome" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$" required>
+                                    </div>
+
+                                    <div class="form-group input-group mb-5">
+                                        <i class="fas fa-signature fa-2x"></i>
+                                        <input type="text" name="cognome" id="surname" class="form-control" placeholder="Cognome" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$" required>
+                                    </div>
+
+                                    <div class="form-group input-group mb-5">
+                                        <i class="fas fa-phone fa-2x"></i>
+                                        <input type="tel" name="telefono" id="phone" class="form-control" placeholder="Numero di telefono" pattern="^[0-9+]*$" required>
+                                    </div>
+
+                                    <div class="form-group input-group mb-5">
+                                        <i class="fas fa-envelope fa-2x"></i>
+                                        <input type="email" name="email" id="email" class="form-control" placeholder="Email" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" maxlength="100" required>
+                                    </div>
+
+                                    <div class="form-group input-group mb-5">
+                                        <i class="fas fa-lock fa-2x"></i>
+                                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" onkeyup="bonta(); live()" pattern="(?=.*[a-z]).{8,}" title="Deve contenere almeno 8 caratteri" required>
+                                    </div>
+
+                                    <div class="input-group mb-5">
+                                        <i class="fas fa-lock fa-2x"></i>
+                                        <input type="password" id="cpassword" class="form-control" placeholder="Conferma Password" onkeyup="live()" required>
+                                    </div>
+
+                                    <!-- Password notifies -->
+                                    <div class="row">
+                                        <div class="col-sm-6 offset-md-3 text-center" style="margin-top: 0.5%">
+                                            <p id="bon"></p>
+                                            <p id="error"></p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Confirm/Error message -->
+                                    <div id="suconfmessage"></div>
+
+                                    <div class="text-center mt-2">
+                                        <button class="btn btn-info" id="conf" type="submit" disabled>Registrati</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!--Footer-->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-info ml-auto" data-dismiss="modal">Chiudi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+			//Controllo finale sulla lunghezza della password e reset del form
+            function controllo() {
+                var p = document.getElementById('password').value;
+
+                //Controllo lunghezza
+                if(p.length >= 8) {
+                    document.getElementById('f').reset();
+					//document.getElementById('confn').style.display='block';
+                    document.getElementById('conf').disabled = true;
+                }
+                else {
+					//document.getElementById('err').style.display='block';
+                    alert("La password deve contenere almeno 8 caratteri!");
+                }
+            }
+			
+			//Controllo live sulla bontà della password
+			function bonta() {
+				var p = document.getElementById('password').value;
+                var cp = document.getElementById('cpassword').value;
+                var counter = 0; //Bontà della password [1-5]
+				var corta = 1;
+				
+				//Controllo lunghezza
+				if(p.length >= 8) {
+					counter+=25;
+					corta = 0;
+				}
+
+				//Controllo minuscole
+				var caratteriMin = /[a-z]/;
+				if(p.match(caratteriMin)) {
+					counter+=25;
+				}
+
+				//Controllo maiuscole
+				var caratteriMaiusc = /[A-Z]/;
+				if(p.match(caratteriMaiusc)) {
+					counter+=25;
+				}
+				
+				//Controllo numeri
+				var numeri = /[0-9]/;
+				if(p.match(numeri)) {
+					counter+=25;
+				}
+				
+				//Scritta sulla bontà
+				if(corta == 1) {
+					document.getElementById("bon").style.color = "#B81818";
+                    document.getElementById("bon").innerHTML = "Password molto debole! Inserisci almeno 8 caratteri!";
+				}
+				else{
+					switch(counter) {
+						case 25:
+							document.getElementById("bon").style.color = "#B81818";
+							document.getElementById("bon").innerHTML = "Password molto debole!";
+							break
+						case 50:
+							document.getElementById("bon").style.color = "#B81818";
+							document.getElementById("bon").innerHTML = "Password debole!";
+							break
+						case 75:
+							document.getElementById("bon").style.color = "#C2B913";
+							document.getElementById("bon").innerHTML = "Password buona!";
+							break
+						case 100:
+							document.getElementById("bon").style.color = "#219E21";
+							document.getElementById("bon").innerHTML = "Password ottima!";
+							break
+					}
+				}
+			}
+
+			//Controllo live sulla coincidenza di "conferma password" con "password"
+            function live() {
+                var cp = document.getElementById("cpassword").value;
+                var p = document.getElementById("password").value;
+
+                var l = new RegExp('^' + cp);
+
+                if(p.match(l) && p.length == cp.length) {
+                    document.getElementById("conf").disabled = false;
+                    document.getElementById("error").style.color = "#219E21";
+                    document.getElementById("error").innerHTML = "Le password coincidono!";
+                }
+                else{
+                    document.getElementById("error").style.color = "#B81818";
+                    document.getElementById("error").innerHTML = "Attenzione! Le password non coincidono!";
+                    document.getElementById("conf").disabled = true;
+                }
+            }
+        </script>
+        
+        <script>
+            //Submit sign up form
+            $(function() {
+                var form = $('#suf');
+                var formMessages = $('#suconfmessage');
+
+                $(form).submit(function(event) {
+                    event.preventDefault();
+
+                    var formData = $(form).serialize();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: $(form).attr('action'),
+                        data: formData,
+                        dataType: 'text xml',
+                        success: function(xml) {
+                            xml = $(xml);
+                            var succ = xml.find('success').text();
+                            var message = xml.find('message').text();
+
+                            // Make sure that the formMessages div has the 'success' class.
+                            $(formMessages).attr('style', 'color: green');
+
+                            // Set the message text.
+                            $(formMessages).text(message);
+                        },
+                        error: function(data) {
+                            // Make sure that the formMessages div has the 'error' class.
+                            $(formMessages).attr('style', 'color: red');
+                            $(formMessages).text('Oops! Errore inaspettato!');
+                        }
+                    });
+                });
+            })
+
+            //Submit sign in form
+            $(function() {
+                var form = $('#sif');
+                var formMessages = $('#siconfmessage');
+
+                $(form).submit(function(event) {
+                    event.preventDefault();
+
+                    var formData = $(form).serialize();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: $(form).attr('action'),
+                        data: formData,
+                        dataType: 'text xml',
+                        success: function(xml) {
+                            xml = $(xml);
+                            var succ = xml.find('success').text();
+                            var message = xml.find('message').text();
+
+                            if(succ == "true") {
+                                $('#usrIcon').attr('data-target', '#');
+
+                                if(message == "utente") {
+                                    $('#usrButtom').attr('href', './user.html');
+                                    $('#signinup').modal('toggle');
+                                } else if(message == "amministratore") {
+                                    window.location.replace('./admin.html');
+                                } else if(message == "bagnino") {
+                                    window.location.replace('./lifeguard.html');
+                                } else if(message == "cassiere") {
+                                    window.location.replace('./cashier.html');
+                                }
+                            } else {
+                                // Make sure that the formMessages div has the 'error' class.
+                                $(formMessages).attr('style', 'color: red');
+                                $(formMessages).text(message);
+                            }
+                        },
+                        error: function(data) {
+                            // Make sure that the formMessages div has the 'error' class.
+                            $(formMessages).attr('style', 'color: red');
+                            $(formMessages).text('Oops! Errore inaspettato!');
+                        }
+                    });
+                });
+            })
+        </script>
+    </body>
+</html>

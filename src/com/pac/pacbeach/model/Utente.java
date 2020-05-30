@@ -28,6 +28,9 @@ public class Utente
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column( name = "nome", nullable = false)
     private String nome;
 
@@ -44,6 +47,9 @@ public class Utente
     @Column(name = "dataRegistrazione", nullable = false)
     private Timestamp dataRegistrazione;
 
+    @Column(name = "ruolo", nullable = false)
+    private String ruolo;
+
     @XmlTransient
     @OneToMany(mappedBy = "utente")
     private List<Prenotazione> prenotazioni;
@@ -53,13 +59,15 @@ public class Utente
         return XmlConverter.jaxbObjectToXML(this);
     }
 
-    public Utente(String email, String nome, String cognome, String telefono)
+    public Utente(String email, String password, String nome, String cognome, String telefono)
     {
         setEmail(email);
+        setPassword(password);
         setNome(nome);
         setCognome(cognome);
         setTelefono(telefono);
-        setConfermaAccount(false);
+        setConfermaAccount(true);
+        setRuolo("utente");
         setDataRegistrazione(new Timestamp(System.currentTimeMillis()));
     }
 
@@ -83,6 +91,14 @@ public class Utente
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getNome() {
@@ -123,5 +139,13 @@ public class Utente
 
     public void setDataRegistrazione(Timestamp dataRegistrazione) {
         this.dataRegistrazione = dataRegistrazione;
+    }
+
+    public String getRuolo() {
+        return ruolo;
+    }
+
+    public void setRuolo(String ruolo) {
+        this.ruolo = ruolo;
     }
 }

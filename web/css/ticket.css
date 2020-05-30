@@ -1,0 +1,33 @@
+html {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-image: url("../img/beach.jpg");
+
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.card {
+    box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.7);
+}
+
+.col-2 {
+    padding: 0px;
+}
+
+.modal-header {
+    background-color: #F1F2F6;
+}
+
+.modal-body {
+    background-color: white;
+}
+
+.modal-footer {
+    background-color: #F1F2F6;
+}

@@ -71,7 +71,7 @@ public class Dao
         return query.getSingleResult();
     }
 
-    protected static List get(String queryString, Object ...params)
+    protected static List get(String queryString, Object ...params) throws NoResultException
     {
         Session session = HibernateUtils.getSession();
 

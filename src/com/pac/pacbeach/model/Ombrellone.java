@@ -17,7 +17,7 @@ public class Ombrellone
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idOmbrellone")
-    private int idOmbrellone;
+    private Integer idOmbrellone;
 
     @Column(name = "prenotabile")
     private Boolean prenotabile;
@@ -36,11 +36,11 @@ public class Ombrellone
         setPrenotabile(prenotabile);
     }
 
-    public int getIdOmbrellone() {
+    public Integer getIdOmbrellone() {
         return idOmbrellone;
     }
 
-    public void setIdOmbrellone(int idOmbrellone) {
+    public void setIdOmbrellone(Integer idOmbrellone) {
         this.idOmbrellone = idOmbrellone;
     }
 

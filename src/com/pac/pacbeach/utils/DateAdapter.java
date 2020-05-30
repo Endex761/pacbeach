@@ -14,7 +14,7 @@ public class DateAdapter extends XmlAdapter<String, Date>
     public String marshal(Date v) throws Exception {
         synchronized (dateFormat)
         {
-            return dateFormat.format(v);
+            return dateFormat.format(v).replace(' ','T');
         }
     }
 

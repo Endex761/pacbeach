@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+    <head>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Font-awesome for icons -->
+        <script src="https://kit.fontawesome.com/89a6b8d154.js" crossorigin="anonymous"></script>
+
+        <!-- Style -->
+        <link rel="stylesheet" href="css/cashier.css">
+
+        <title>PaC_Beach</title>
+        
+        <script>
+            //Enable all tooltip
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();   
+            });
+        </script>
+        
+		<script>
+			//Set tomorrow as first selectable data
+			function setMinData() {
+				var today = new Date();
+				var d = today.getDate() + 1;
+				var m = today.getMonth()+1; //Inizia da 0
+				var y = today.getFullYear();
+				
+				if (d < 10) {
+					d = '0' + d;
+				} 
+				
+				if (m < 10) {
+					m = '0' + m;
+				} 
+
+				var tomorrow = y + '-' + m + '-' + d;
+				document.getElementById("date").setAttribute("min", tomorrow);
+			}
+		</script>
+
+        <script>
+            //Get today's info
+            $(document).ready(function() {
+                var today = new Date();
+				var d = today.getDate();
+				var m = today.getMonth()+1; //Inizia da 0
+				var y = today.getFullYear();
+				
+				if (d < 10) {
+					d = '0' + d;
+				} 
+				
+				if (m < 10) {
+					m = '0' + m;
+				} 
+
+				var t = y + '-' + m + '-' + d;
+                $('#date').attr('value', t);
+
+                //TO DO
+                $.ajax({
+                    type: 'GET',
+                    url: '',
+                    data: t,
+                    success: function(xml) {
+                        if(xml.find('success') == "true") {
+                            $('#table').append(
+                                '<tr><td>' + xml.find('data') + '</td></tr>'
+                            )
+                        }
+                    }
+                })
+            })
+        </script>
+    </head>
+
+    <body>
+        <!-- Logo -->
+        <div class="container">
+            <a href="./home.html"><img src="img/logo.png" alt="Logo" class="mx-auto d-block"></a>
+        </div>
+
+        <!-- Logout -->
+        <div class="container mb-3">
+            <div class="d-flex flex-row-reverse"> 
+                <i class="fas fa-sign-out-alt fa-2x" onclick="logout()" data-toggle="tooltip" data-placement="top" title="Logout!"></i>
+            </div>
+        </div>
+
+        <!-- Manage -->
+        <div class="container mb-4">
+            <div class="card text-center">
+                
+                <form action="/#" method="POST">
+                    <!-- Select Data -->
+                    <div class="container mt-4">
+                        <h4>Scegli la data</h4>
+                    </div>
+
+                    <div class="container form-group mt-2" style="padding-right: 10%; padding-left: 10%;">
+                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" min="" required>
+                    </div>
+
+                    <div class="container mt-4 mb-4">
+                        <button class="btn btn-info" type="submit">Conferma</button>
+                    </div>
+                </form>
+
+                <div class="table-responsive">
+                    <table class="table thead-light">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Posti</th>
+                                <th>Tempo</th>
+                                <th>Costo</th>
+                                <th>Pagato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tickets -->
+        <div class="container mb-4">
+            <div class="card text-center">
+                
+                <form action="/api/prenotazione" method="POST">
+                    
+                    <div class="container mt-4">
+                        <h4>Prenotazione</h4>
+                    </div>
+
+                    <!-- Select Data -->
+                    <div class="form-group container mt-2" style="padding-right: 10%; padding-left: 10%;">
+                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" min="" required>
+                    </div>
+
+                    <!-- Select Hours -->
+                    <div class="form-group container mt-4">
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()" checked> Intera giornata - 8:00/20:00
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()"> Mattina - 8:00/14:00
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()"> Pomeriggio - 14:00/20:00
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline mr-4">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" name="time" id="customTime" onclick="unlockCustom()"> Fascia oraria personalizzata
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group container mt-2">
+                        <label for="start">Dalle:</label>
+                        <input type="time" name="start" id="start" min="08:00" max="19:00" step="3600" pattern="[0-2][0-9]:00" onkeyup="setMinEnd()" onclick="setMinEnd()" disabled>
+
+                        <label for="end">Alle:</label>
+                        <input type="time" name="end" id="end" min="9:00" max="20:00" step="3600" pattern="[0-2][0-9]:00" disabled>
+                    </div>
+
+                    <div class="form-group mt-4" id="guests" style="padding-right: 10%; padding-left: 10%;">
+                        <label for="guest1">Ospiti:</label>
+                        <input id="guest1" class="form-control" placeholder="Ospite 1" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$"></textarea>
+                    </div>
+
+                    <div class="container mt-1">
+                        <button class="btn btn-success" onclick="addGuest()"><i class="fas fa-plus"></i></button>
+                    </div>
+
+                    <div class="container mt-4 mb-4">
+                        <button class="btn btn-info" type="submit">Conferma</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            function addGuest() {
+                if(document.getElementById("guest1").value != "") {
+                    event.preventDefault();
+
+                    var i = document.createElement("input");
+                    i.setAttribute("class","form-control mt-1");
+                    i.setAttribute("placeholder","Ospite");
+                    i.setAttribute("pattern","^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$");
+
+                    var element = document.getElementById("guests");
+                    element.appendChild(i);
+                }
+            }
+        </script>
+    </body>
+</html>
