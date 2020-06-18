@@ -1,9 +1,14 @@
 
 import com.pac.pacbeach.control.GestioneAccountControl;
 import com.pac.pacbeach.control.GestionePrenotazioneControl;
+import com.pac.pacbeach.dao.OrdineDao;
 import com.pac.pacbeach.dao.PrenotazioneDao;
+import com.pac.pacbeach.dao.ProdottoDao;
+import com.pac.pacbeach.model.Ordine;
 import com.pac.pacbeach.model.Prenotazione;
+import com.pac.pacbeach.model.Prodotto;
 import com.pac.pacbeach.model.Utente;
+import com.pac.pacbeach.model.wrapper.WrapperArrayList;
 import com.pac.pacbeach.utils.Result;
 
 import java.sql.Date;
@@ -16,8 +21,17 @@ public class App
 {
     public static void main(String[] args)
     {
-        Timestamp start = new Timestamp(System.currentTimeMillis());
-        Timestamp fine = new Timestamp(System.currentTimeMillis() + 60 * 60 * 1000);
+        //List<Ordine> ordini = OrdineDao.ordiniPrenotazione(1);
+
+        //Ordine o = ordini.get(0);
+
+        //System.out.println(o.getIdOrdine());
+
+        //List<Prodotto> prodotti = ProdottoDao.listaProdottiDisponibili();
+
+        //System.out.println(prodottiList.toXmlString());
+        //Timestamp start = new Timestamp(System.currentTimeMillis());
+        //Timestamp fine = new Timestamp(System.currentTimeMillis() + 60 * 60 * 1000);
 
         //Boolean libero = GestionePrenotazioneControl.controllaAltrePrenotazioni(start, fine, 1);
 
@@ -53,6 +67,8 @@ public class App
         //Result r2 = UtenteControl.getUtenteByEmail("simonpietroromeo@gmail.com");
 
         //System.out.println(r2.toXmlString());
+
+
     }
 
 

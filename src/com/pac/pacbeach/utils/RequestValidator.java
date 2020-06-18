@@ -1,11 +1,13 @@
 package com.pac.pacbeach.utils;
 
 import com.pac.pacbeach.exceptions.ValidationException;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+/**
+ * Classe per la validazione dei parametri nell'header di richiesta.
+ */
 public class RequestValidator
 {
     Map parameters;
@@ -17,6 +19,13 @@ public class RequestValidator
         parameters = request.getParameterMap();
     }
 
+    /**
+     * Funzione che restituice un parametro della richiesta http
+     * @param fieldName nome del parametro
+     * @param required true se è un campo richiesto
+     * @return valore del parametro richiesto
+     * @throws ValidationException Se il parametro è richiesto ma non è presente lancia un eccezione
+     */
     public String getParameter(String fieldName, Boolean required) throws ValidationException
     {
         if(parameters.containsKey(fieldName))

@@ -5,7 +5,9 @@ import com.pac.pacbeach.model.Utente;
 
 import javax.persistence.NoResultException;
 
-
+/**
+ * Classe per l'accesso ai dati degli utenti
+ */
 public class UtenteDao extends Dao
 {
     public static void creaUtente(Utente utente) throws DuplicatedEntryException

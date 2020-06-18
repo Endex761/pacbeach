@@ -5,10 +5,13 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Base64; 
+import java.util.Base64;
 
-//Classe per la gestione del password strage.
-//https://github.com/defuse/password-hashing
+/**
+ * Classe per la gestione del password storage
+ * https://github.com/defuse/password-hashing
+ */
+
 public class PasswordStorage
 {
 

@@ -24,35 +24,10 @@
         <!-- Style -->
         <link rel="stylesheet" href="css/lifeguard.css">
 
+        <!-- Script -->
+        <script src="js/lifeguard.js"></script>
+
         <title>PaC_Beach</title>
-        
-        <script>
-            //Enable all tooltip
-            $(document).ready(function(){
-                $('[data-toggle="tooltip"]').tooltip();   
-            });
-        </script>
-
-		<script>
-			//Set tomorrow as first selectable data
-			function setMinData() {
-				var today = new Date();
-				var d = today.getDate() + 1;
-				var m = today.getMonth()+1; //Inizia da 0
-				var y = today.getFullYear();
-				
-				if (d < 10) {
-					d = '0' + d;
-				} 
-				
-				if (m < 10) {
-					m = '0' + m;
-				} 
-
-				var tomorrow = y + '-' + m + '-' + d;
-				document.getElementById("date").setAttribute("min", tomorrow);
-			}
-		</script>
     </head>
 
     <body onload="setMinData()">
@@ -73,7 +48,7 @@
         <div class="container mb-4">
             <div class="card text-center">
                 
-                <form action="/#" method="POST">
+                <form id="dt" action="./api/prenotazione" method="GET">
                     <!-- Select Data -->
                     <div class="container mt-4">
                         <h4>Scegli la data</h4>
@@ -82,6 +57,9 @@
                     <div class="form-group container mt-2" style="padding-right: 10%; padding-left: 10%;">
                         <input type="date" name="date" id="date" class="form-control" placeholder="Data" min="" required>
                     </div>
+                    
+                    <!-- Confirm/Error message -->
+                    <div id="dtconfmessage"></div>
 
                     <div class="container mt-4 mb-4">
                         <button class="btn btn-info" type="submit">Conferma</button>
@@ -100,82 +78,82 @@
                         <div class="container">
                             <div class="row mt-4 mb-4">
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="1" value="1" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="2" value="2" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="3" value="3" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="4" value="4" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="5" value="5" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
-                                </div>
-                            </div>
-                            <div class="row mt-4 mb-4">
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
-                                </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
-                                </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
-                                </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
-                                </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
-                                </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="6" value="6" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                             </div>
                             <div class="row mt-4 mb-4">
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="7" value="7" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="8" value="8" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="9" value="9" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="10" value="10" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="11" value="11" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="12" value="12" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                             </div>
                             <div class="row mt-4 mb-4">
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="13" value="13" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="14" value="14" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="15" value="15" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="16" value="16" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="17" value="17" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                                 <div class="col-2">
-                                    <button type="button" class="btn btn-outline-info"><i class="fas fa-umbrella-beach"></i></button>
+                                    <button type="button" class="btn btn-outline-info" id="18" value="18" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
+                                </div>
+                            </div>
+                            <div class="row mt-4 mb-4">
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-outline-info" id="19" value="19" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-outline-info" id="20" value="20" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-outline-info" id="21" value="21" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-outline-info" id="22" value="22" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-outline-info" id="23" value="23" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-outline-info" id="24" value="24" onclick="selectSeat(this)"><i class="fas fa-umbrella-beach"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -185,29 +163,9 @@
                 <!-- Info -->
                 <div class="container mt-4">
                     <p class="info">Info:</p>
-                    <ul class="list-unstyled info">
-                        <li>Mario Rossi</li>
-                        <li>8:00 - 14:00</li>
-                        <li>Luigi Gialli</li>
-                        <li>14:00 - 20:00</li>
-                    </ul>
+                    <ul class="list-unstyled info" id="info"></ul>
                 </div>
             </div>
         </div>
-
-        <script>
-            function setMinEnd() {
-                var startInput = document.getElementById('start').value;
-                var minEndHoursI = parseInt(startInput.substr(0,2)) + 1;
-                var minEndHours = minEndI.toString();
-                var minEnd = minEndHours + ':00';
-
-                if(minEndHoursI < 10) {
-                    minEnd = '0' + minEnd;
-                }
-
-                document.getElementById('end').setAttribute("min", minEnd);
-            }
-        </script>
     </body>
 </html>

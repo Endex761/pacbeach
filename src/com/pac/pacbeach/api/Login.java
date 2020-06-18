@@ -1,17 +1,17 @@
 package com.pac.pacbeach.api;
 
 import com.pac.pacbeach.control.GestioneAccountControl;
+import com.pac.pacbeach.exceptions.UserNotLoggedInException;
 import com.pac.pacbeach.exceptions.ValidationException;
 import com.pac.pacbeach.model.Utente;
 import com.pac.pacbeach.utils.RequestValidator;
 import com.pac.pacbeach.utils.Result;
+import com.pac.pacbeach.utils.SessionManager;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -33,7 +33,7 @@ public class Login extends HttpServlet {
      *      > message = messaggio d'errore
      *
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/xml");
 
         RequestValidator r = new RequestValidator(request);
@@ -52,7 +52,7 @@ public class Login extends HttpServlet {
                 Utente u = (Utente) res.getContent();
 
                 //Prendo la sessione corrente
-                HttpSession session = request.getSession();
+                SessionManager session = new SessionManager(request);
 
                 //E inizializzo i parametri di sessione
                 session.setAttribute("email", u.getEmail());
@@ -71,28 +71,27 @@ public class Login extends HttpServlet {
         response.getWriter().write(res.toXmlString());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //TODO remove, debug purpose
         //doPost(request,response);
 
         response.setContentType("text/xml");
 
-        //Prendo la sessione corrente
-        HttpSession session = request.getSession();
-
-        //E inizializzo i parametri di sessione
-        String ruolo = (String) session.getAttribute("ruolo");
+        SessionManager sessionManager = new SessionManager(request);
 
         Result res;
 
-        if(ruolo != null)
+        try
         {
+            String ruolo = sessionManager.getLoggedUserRole();
+
             res = new Result(ruolo);
         }
-        else
+        catch (UserNotLoggedInException e)
         {
             res = new Result("Utente non loggato", false);
         }
+
 
         response.getWriter().write(res.toXmlString());
 

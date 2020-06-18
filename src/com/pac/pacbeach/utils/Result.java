@@ -1,19 +1,25 @@
 package com.pac.pacbeach.utils;
 
-import com.pac.pacbeach.model.Ombrellone;
-import com.pac.pacbeach.model.Prenotazione;
-import com.pac.pacbeach.model.Utente;
+import com.pac.pacbeach.model.*;
 import com.pac.pacbeach.model.wrapper.WrapperArrayList;
 
 import javax.xml.bind.annotation.*;
 
+/**
+ * Classe per la gestione della comunicazione con il front-end
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({Utente.class, Prenotazione.class, Ombrellone.class, WrapperArrayList.class})
+@XmlSeeAlso({Utente.class, Prenotazione.class, Ombrellone.class, WrapperArrayList.class, Prodotto.class, Ordine.class, ProdottoOrdine.class})
 public class Result
 {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * success: Indica se la richiesta è stata evasa con successo
+     * message: Contiene un messaggio per il front-end
+     * content: Contiene eventuali dati che il server invia al front-end
+     */
     private Boolean success;
     private String message;
     private Object content;

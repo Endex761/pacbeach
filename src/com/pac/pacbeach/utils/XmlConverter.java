@@ -4,10 +4,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
 
+/**
+ * Classe per la conversione degli ogetti in Stringa XML
+ */
 public class XmlConverter
 {
     public static String jaxbObjectToXML(Object obj)
@@ -30,9 +30,7 @@ public class XmlConverter
             jaxbMarshaller.marshal(obj, sw);
 
             //Verify XML Content
-            String xmlContent = sw.toString();
-
-            return xmlContent;
+            return sw.toString();
 
         } catch (JAXBException e)
         {

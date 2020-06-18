@@ -6,6 +6,9 @@ import com.pac.pacbeach.model.Ombrellone;
 import javax.persistence.NoResultException;
 import java.util.List;
 
+/**
+ * Classe per l'accesso ai dati degli ombrelloni
+ */
 public class OmbrelloneDao extends Dao
 {
     public static void creaOmbrellone(Ombrellone ombrellone) throws DuplicatedEntryException

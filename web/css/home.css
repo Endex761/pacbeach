@@ -17,6 +17,10 @@ a {
     color: black;
 }
 
+a:hover {
+    color: black;
+}
+
 .right {
     float: right;
     margin-right: 20px;
@@ -43,10 +47,17 @@ h2 {
     padding: 0 64px;
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 1200px) and (min-width: 1000px) {
+    .column {
+        padding: 0px;
+    }
+}
+
+@media screen and (max-width: 1000px) {
     .column {
         width: 100%;
         display: block;
+        padding: 0px;
     }
 }
 
@@ -83,7 +94,7 @@ h2 {
     text-decoration: none;
 }
 
-.modal-content{
+#modalContent{
     background-color: transparent; 
     border: none;
 }

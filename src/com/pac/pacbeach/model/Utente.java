@@ -59,7 +59,7 @@ public class Utente
         return XmlConverter.jaxbObjectToXML(this);
     }
 
-    public Utente(String email, String password, String nome, String cognome, String telefono)
+    public Utente(String email, String password, String nome, String cognome, String telefono, String ruolo)
     {
         setEmail(email);
         setPassword(password);
@@ -67,7 +67,7 @@ public class Utente
         setCognome(cognome);
         setTelefono(telefono);
         setConfermaAccount(true);
-        setRuolo("utente");
+        setRuolo(ruolo);
         setDataRegistrazione(new Timestamp(System.currentTimeMillis()));
     }
 
@@ -148,4 +148,6 @@ public class Utente
     public void setRuolo(String ruolo) {
         this.ruolo = ruolo;
     }
+
+
 }

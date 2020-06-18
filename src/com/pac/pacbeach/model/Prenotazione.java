@@ -38,24 +38,27 @@ public class Prenotazione
     @Column(name = "costo", nullable = false)
     private Float costo;
 
-    @XmlTransient
+    @Column(name = "ospiti")
+    private String ospiti;
+
     @ManyToOne
     @JoinColumn(name = "refUtente", nullable = false)
     private Utente utente;
 
-    @XmlTransient
     @ManyToOne
     @JoinColumn(name = "refOmbrellone", nullable = false)
     private Ombrellone ombrellone;
 
+
     public Prenotazione(){}
 
-    public Prenotazione(Timestamp orarioInizio, Timestamp orarioFine, Boolean pagata, float costo, Utente utente, Ombrellone ombrellone) //Ombrellone ombrellone
+    public Prenotazione(Timestamp orarioInizio, Timestamp orarioFine, Boolean pagata, float costo, String ospiti, Utente utente, Ombrellone ombrellone) //Ombrellone ombrellone
     {
         setOrarioInizio(orarioInizio);
         setOrarioFine(orarioFine);
         setPagata(pagata);
         setCosto(costo);
+        setOspiti(ospiti);
         setUtente(utente);
         setOmbrellone(ombrellone);
         effettuata = new Timestamp(System.currentTimeMillis());
@@ -129,5 +132,13 @@ public class Prenotazione
 
     public void setOmbrellone(Ombrellone ombrellone) {
         this.ombrellone = ombrellone;
+    }
+
+    public String getOspiti() {
+        return ospiti;
+    }
+
+    public void setOspiti(String ospiti) {
+        this.ospiti = ospiti;
     }
 }

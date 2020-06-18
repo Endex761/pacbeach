@@ -1,34 +1,44 @@
 package com.pac.pacbeach.utils;
 
-import com.pac.pacbeach.model.Ombrellone;
-import com.pac.pacbeach.model.Prenotazione;
-import com.pac.pacbeach.model.Utente;
+import com.pac.pacbeach.model.*;
 
 import org.hibernate.HibernateError;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-//Classe per gestire le sessioni di connessione con il databse.
+import javax.persistence.Query;
+
+/**
+ * Classe per la gestione della persistenza con Hibernate
+ */
 public class HibernateUtils
 {
     private static SessionFactory sessionFactory;
+    private static Boolean serverStarted = false;
 
-    //Inizializza una nuova factory per le sessioni.
+    /**
+     * Funzione di inizializzazione di una session factory.
+     */
     public static void initSessionFactory()
     {
         Configuration config = new Configuration();
+
         config.configure("hibernate-config.xml");
+
         config.addAnnotatedClass(Utente.class);
         config.addAnnotatedClass(Ombrellone.class);
         config.addAnnotatedClass(Prenotazione.class);
-        StandardServiceRegistry srvcReg = new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
+        config.addAnnotatedClass(Prodotto.class);
+        config.addAnnotatedClass(Ordine.class);
+        config.addAnnotatedClass(ProdottoOrdine.class);
+
         sessionFactory = config.buildSessionFactory();
     }
 
-    //Ottieni una sessione di connessione al database
+    /**
+     * Funzione che restituisce una sessione di connessioen al DB
+     */
     public static Session getSession()
     {
         if(sessionFactory == null)
@@ -46,5 +56,20 @@ public class HibernateUtils
         }
 
         return session;
+    }
+
+    /**
+     * Funzione richiamata una sola volta per avviare il Server Hibernate ed evitare tempi di attesa durante il primo login/registrazione
+     */
+    public static void initServer()
+    {
+        if(!serverStarted)
+        {
+            Session s = getSession();
+            Query q = s.createQuery("from Ombrellone where id=1");
+            q.getResultList();
+
+            serverStarted = true;
+        }
     }
 }

@@ -5,7 +5,6 @@ import com.pac.pacbeach.exceptions.ValidationException;
 import com.pac.pacbeach.utils.RequestValidator;
 import com.pac.pacbeach.utils.Result;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,15 +13,15 @@ import java.io.IOException;
 
 @WebServlet("/api/ombrellone")
 public class Ombrellone extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/xml");
 
         RequestValidator rv = new RequestValidator(request);
-        Result res = null;
+        Result res;
         try
         {
             String orarioInizio = rv.getParameter("orarioInizio");

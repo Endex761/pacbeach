@@ -24,42 +24,10 @@
         <!-- Style -->
         <link rel="stylesheet" href="css/home.css">
 
+        <!-- Script -->
+        <script src="js/home.js"></script>
+
         <title>PaC_Beach</title>
-
-        <!-- Check if the user is logged -->
-        <script>
-            $(document).ready(function() {
-                $.ajax({
-                    type: 'GET',
-                    url: './api/login',
-                    dataType: 'text xml',
-                    success: function(xml) {
-                        xml = $(xml);
-                        var succ = xml.find('success').text();
-                        var message = xml.find('message').text();
-
-                        if(succ == "true") {
-                            $('#usrIcon').attr('data-target', '#');
-
-                            if(message == "utente") {
-                                $('#usrButtom').attr('href', './user.html');
-                            } else if(message == "amministratore") {
-                                window.location.replace('./admin.html');
-                            } else if(message == "bagnino") {
-                                window.location.replace('./lifeguard.html');
-                            } else if(message == "cassiere") {
-                                window.location.replace('./cashier.html');
-                            }
-                        }
-                    },
-                    error: function(data) {
-                        // Make sure that the formMessages div has the 'error' class.
-                        $(formMessages).attr('style', 'color: red');
-                        $(formMessages).text('Oops! Errore inaspettato!');
-                    }
-                })
-            })
-        </script>
     </head>
 
     <body>
@@ -91,7 +59,7 @@
                                 <li>Mezza giornata: €8</li>
                                 <li>Intera giornata: €15</li>
                             </ul>
-                            <p><a class="cardbutton" href="./ticket.html" role="button">Prenota</a></p>
+                            <p><a id="ticketButton" class="cardbutton" data-toggle="modal" data-target="#signinup" role="button" style="color: white;">Prenota</a></p>
                         </div>
                     </div>
                 </div>
@@ -104,7 +72,7 @@
                             <h2>Bar</h2>
                             <p class="info">Ordina snack e bevande comodamente dalla tua sdraio!</p>
                             <p>Puoi richiedere che il tuo ordine venga consegnato direttamente al tavolo o se preferisci venire a ritirarlo.</p>
-                            <p><button class="cardbutton">Ordina</button></p>
+                            <p><a id="barButton" class="cardbutton" data-toggle="modal" data-target="#signinup" role="button" style="color: white;">Ordina</a></p>
                         </div>
                     </div>
                 </div>
@@ -133,7 +101,7 @@
             <div class="modal-dialog" role="document" style="margin-top: 5%;">
 
                 <!--Content-->
-                <div class="modal-content">
+                <div id="modalContent" class="modal-content">
 
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs justify-content-center" role="tablist">
@@ -158,7 +126,7 @@
                                 <form id="sif" action="./api/login" method="POST">
                                     <div class="form-group input-group mb-5">
                                         <i class="fas fa-envelope fa-2x"></i>
-                                        <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
+                                        <input type="email" name="email" id="siemail" class="form-control" placeholder="Email" required>
                                     </div>
 
                                     <div class="form-group input-group mb-4">
@@ -193,12 +161,12 @@
                                 <form id="suf" action="./api/registrazione" method="POST">
                                     <div class="form-group input-group mb-5">
                                         <i class="fas fa-signature fa-2x"></i>
-                                        <input type="text" name="nome" id="name" class="form-control" placeholder="Nome" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$" required>
+                                        <input type="text" name="nome" id="name" class="form-control" placeholder="Nome" pattern="^[A-Za-z]{1,32}$" required>
                                     </div>
 
                                     <div class="form-group input-group mb-5">
                                         <i class="fas fa-signature fa-2x"></i>
-                                        <input type="text" name="cognome" id="surname" class="form-control" placeholder="Cognome" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$" required>
+                                        <input type="text" name="cognome" id="surname" class="form-control" placeholder="Cognome" pattern="^([A-Za-z]{1,32}\s?){1,2}$" required>
                                     </div>
 
                                     <div class="form-group input-group mb-5">
@@ -208,7 +176,7 @@
 
                                     <div class="form-group input-group mb-5">
                                         <i class="fas fa-envelope fa-2x"></i>
-                                        <input type="email" name="email" id="email" class="form-control" placeholder="Email" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" maxlength="100" required>
+                                        <input type="email" name="email" id="suemail" class="form-control" placeholder="Email" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" maxlength="100" required>
                                     </div>
 
                                     <div class="form-group input-group mb-5">
@@ -248,184 +216,21 @@
             </div>
         </div>
 
-        <script>
-			//Controllo finale sulla lunghezza della password e reset del form
-            function controllo() {
-                var p = document.getElementById('password').value;
+        <!-- Success notify -->
+        <div class="modal fade" id="successNotify">
+            <div class="modal-dialog">
+                <div class="modal-content" style="background-color: #F1F2F6;">
+                    
+                    <!-- Modal body -->
+                    <div class="modal-body mx-auto">
+                        <h4> Login effettuato con successo! </h4>
 
-                //Controllo lunghezza
-                if(p.length >= 8) {
-                    document.getElementById('f').reset();
-					//document.getElementById('confn').style.display='block';
-                    document.getElementById('conf').disabled = true;
-                }
-                else {
-					//document.getElementById('err').style.display='block';
-                    alert("La password deve contenere almeno 8 caratteri!");
-                }
-            }
-			
-			//Controllo live sulla bontà della password
-			function bonta() {
-				var p = document.getElementById('password').value;
-                var cp = document.getElementById('cpassword').value;
-                var counter = 0; //Bontà della password [1-5]
-				var corta = 1;
-				
-				//Controllo lunghezza
-				if(p.length >= 8) {
-					counter+=25;
-					corta = 0;
-				}
-
-				//Controllo minuscole
-				var caratteriMin = /[a-z]/;
-				if(p.match(caratteriMin)) {
-					counter+=25;
-				}
-
-				//Controllo maiuscole
-				var caratteriMaiusc = /[A-Z]/;
-				if(p.match(caratteriMaiusc)) {
-					counter+=25;
-				}
-				
-				//Controllo numeri
-				var numeri = /[0-9]/;
-				if(p.match(numeri)) {
-					counter+=25;
-				}
-				
-				//Scritta sulla bontà
-				if(corta == 1) {
-					document.getElementById("bon").style.color = "#B81818";
-                    document.getElementById("bon").innerHTML = "Password molto debole! Inserisci almeno 8 caratteri!";
-				}
-				else{
-					switch(counter) {
-						case 25:
-							document.getElementById("bon").style.color = "#B81818";
-							document.getElementById("bon").innerHTML = "Password molto debole!";
-							break
-						case 50:
-							document.getElementById("bon").style.color = "#B81818";
-							document.getElementById("bon").innerHTML = "Password debole!";
-							break
-						case 75:
-							document.getElementById("bon").style.color = "#C2B913";
-							document.getElementById("bon").innerHTML = "Password buona!";
-							break
-						case 100:
-							document.getElementById("bon").style.color = "#219E21";
-							document.getElementById("bon").innerHTML = "Password ottima!";
-							break
-					}
-				}
-			}
-
-			//Controllo live sulla coincidenza di "conferma password" con "password"
-            function live() {
-                var cp = document.getElementById("cpassword").value;
-                var p = document.getElementById("password").value;
-
-                var l = new RegExp('^' + cp);
-
-                if(p.match(l) && p.length == cp.length) {
-                    document.getElementById("conf").disabled = false;
-                    document.getElementById("error").style.color = "#219E21";
-                    document.getElementById("error").innerHTML = "Le password coincidono!";
-                }
-                else{
-                    document.getElementById("error").style.color = "#B81818";
-                    document.getElementById("error").innerHTML = "Attenzione! Le password non coincidono!";
-                    document.getElementById("conf").disabled = true;
-                }
-            }
-        </script>
-        
-        <script>
-            //Submit sign up form
-            $(function() {
-                var form = $('#suf');
-                var formMessages = $('#suconfmessage');
-
-                $(form).submit(function(event) {
-                    event.preventDefault();
-
-                    var formData = $(form).serialize();
-
-                    $.ajax({
-                        type: 'POST',
-                        url: $(form).attr('action'),
-                        data: formData,
-                        dataType: 'text xml',
-                        success: function(xml) {
-                            xml = $(xml);
-                            var succ = xml.find('success').text();
-                            var message = xml.find('message').text();
-
-                            // Make sure that the formMessages div has the 'success' class.
-                            $(formMessages).attr('style', 'color: green');
-
-                            // Set the message text.
-                            $(formMessages).text(message);
-                        },
-                        error: function(data) {
-                            // Make sure that the formMessages div has the 'error' class.
-                            $(formMessages).attr('style', 'color: red');
-                            $(formMessages).text('Oops! Errore inaspettato!');
-                        }
-                    });
-                });
-            })
-
-            //Submit sign in form
-            $(function() {
-                var form = $('#sif');
-                var formMessages = $('#siconfmessage');
-
-                $(form).submit(function(event) {
-                    event.preventDefault();
-
-                    var formData = $(form).serialize();
-
-                    $.ajax({
-                        type: 'POST',
-                        url: $(form).attr('action'),
-                        data: formData,
-                        dataType: 'text xml',
-                        success: function(xml) {
-                            xml = $(xml);
-                            var succ = xml.find('success').text();
-                            var message = xml.find('message').text();
-
-                            if(succ == "true") {
-                                $('#usrIcon').attr('data-target', '#');
-
-                                if(message == "utente") {
-                                    $('#usrButtom').attr('href', './user.html');
-                                    $('#signinup').modal('toggle');
-                                } else if(message == "amministratore") {
-                                    window.location.replace('./admin.html');
-                                } else if(message == "bagnino") {
-                                    window.location.replace('./lifeguard.html');
-                                } else if(message == "cassiere") {
-                                    window.location.replace('./cashier.html');
-                                }
-                            } else {
-                                // Make sure that the formMessages div has the 'error' class.
-                                $(formMessages).attr('style', 'color: red');
-                                $(formMessages).text(message);
-                            }
-                        },
-                        error: function(data) {
-                            // Make sure that the formMessages div has the 'error' class.
-                            $(formMessages).attr('style', 'color: red');
-                            $(formMessages).text('Oops! Errore inaspettato!');
-                        }
-                    });
-                });
-            })
-        </script>
+                        <div class="text-center mt-4">
+                            <button class="btn btn-success" id="conf" type="button" data-dismiss="modal">Conferma</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
