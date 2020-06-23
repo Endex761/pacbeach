@@ -2,6 +2,7 @@ package com.pac.pacbeach.control;
 
 import com.pac.pacbeach.dao.UtenteDao;
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
+import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.model.Utente;
 import com.pac.pacbeach.utils.PasswordStorage;
 import com.pac.pacbeach.utils.Result;
@@ -20,10 +21,11 @@ public class GestioneAccountControl
      * @param nome  nome dell'utente
      * @param cognome cognome dell'utente
      * @param telefono n. telefono dell'utente
-     * @return oggetto Result
+     * @return oggetto Result con id dell'utente appena creato
      */
     public static Result creaNuovoUtente(String email, String password, String nome, String cognome, String telefono)
     {
+        Utente utente;
         try
         {
             //Faccio l'hash della password in chiaro
@@ -32,10 +34,10 @@ public class GestioneAccountControl
             //Definisco il ruolo (Hardcoded per questa implementazione)
             String ruolo = "utente";
 
-            Utente utente = new Utente(email, hashedPassword, nome, cognome, telefono, ruolo);
+            utente = new Utente(email, hashedPassword, nome, cognome, telefono, ruolo);
 
             //Creo il nuovo utente all'interno del Database
-            UtenteDao.creaUtente(utente);
+            utente = UtenteDao.creaUtente(utente);
         }
         catch (DuplicatedEntryException e)
         {
@@ -46,7 +48,7 @@ public class GestioneAccountControl
             return new Result("Errore creazione utente." + e.getMessage(), false);
         }
 
-        return new Result("Utente creato con successo.");
+        return new Result("Utente creato con successo.", true, utente.getIdUtente());
     }
 
     /**
@@ -65,10 +67,10 @@ public class GestioneAccountControl
             Utente u = UtenteDao.getUtente(email);
 
             //Verifico che la password inserita combaci con quella nel database
-            boolean isCorrenct = PasswordStorage.verifyPassword(password, u.getPassword());
+            boolean isCorrect = PasswordStorage.verifyPassword(password, u.getPassword());
 
             //Se la password è corretta
-            if(isCorrenct)
+            if(isCorrect)
             {
                 u.setPassword(null);
                 u.setNome(null);
@@ -127,8 +129,22 @@ public class GestioneAccountControl
      */
     public static Result aggiornaUtente(Utente u)
     {
-        UtenteDao.aggiornaUtente(u);
+        try
+        {
+            UtenteDao.aggiornaUtente(u);
+
+        }
+        catch (EntityNotUpdatedException e)
+        {
+            return new Result("Errore aggiornamento dati utente.", false);
+        }
 
         return new Result("Utente aggiornato con successo.");
+    }
+
+    protected static String generaPasswordCasuale()
+    {
+        //Non implementata in questa versione
+        return "12345678";
     }
 }

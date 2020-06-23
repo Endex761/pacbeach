@@ -15,5 +15,8 @@
         <mapping class="com.pac.pacbeach.model.Utente"/>
         <mapping class="com.pac.pacbeach.model.Prenotazione"/>
         <mapping class="com.pac.pacbeach.model.Ombrellone"/>
+        <mapping class="com.pac.pacbeach.model.ProdottoOrdine"/>
+        <mapping class="com.pac.pacbeach.model.Ordine"/>
+        <mapping class="com.pac.pacbeach.model.Prodotto"/>
     </session-factory>
 </hibernate-configuration>

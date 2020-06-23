@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+    <head>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Font-awesome for icons -->
+        <script src="https://kit.fontawesome.com/89a6b8d154.js" crossorigin="anonymous"></script>
+
+        <!-- Datatables  -->
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+        <script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+        <!-- Style -->
+        <link rel="stylesheet" href="css/user.css">
+
+        <!-- Script -->
+        <script src="js/user.js"></script>
+
+        <title>PaC_Beach</title>
+    </head>
+
+    <body>
+        <!-- Logo -->
+        <div class="container">
+            <a href="./home.html"><img src="img/logo.png" alt="Logo" class="mx-auto d-block"></a>
+        </div>
+
+        <!-- Logout -->
+        <div class="container mb-3">
+            <div class="d-flex flex-row-reverse"> 
+                <i class="fas fa-sign-out-alt fa-2x" data-toggle="modal" data-target="#logoutNotify" type="button"></i>
+            </div>
+        </div>
+
+        <!-- Bookings -->
+        <div class="container mb-4">
+            <div class="card text-center">
+                <div class="container mt-4">
+                    <h4 class="display-4" id="welcome"></h4>
+                    
+                    <!-- Confirm/Error message -->
+                    <div id="confmessage"></div>
+                </div>
+
+                <div class="table-responsive mt-4">
+                    <table id="table" class="table thead-light">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Orario</th>
+                                <th>Posto</th>
+                                <th>Costo</th>
+                                <th>Pagato</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <small class="font-italic">Seleziona le prenotazioni che desideri premendo la "x" corrispondente, poi "Procedi al pagamento".</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <small class="font-italic">Seleziona le prenotazioni da eliminare premendo il pulsante corrispondente, poi "Conferma eliminazione" per confermare.</small>
+                        </div>
+                    </div>
+                </div>
+                    
+                <!-- Confirm/Error message -->
+                <div id="pconfmessage"></div>
+
+                
+                <div class="container mb-4">
+                    <div class="row">
+                        <div class="col-sm mt-4">
+                            <button class="btn btn-info" type="button" id="confDel" data-toggle="modal" data-target="#deleteNotify" disabled>Conferma eliminazione</button>
+                        </div>
+                        <div class="col-sm mt-4">
+                            <button class="btn btn-info" type="button" id="confPay" data-toggle="modal" data-target="#pay" disabled>Procedi al pagamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bar orders -->
+        <div class="container mb-4">
+            <div class="card text-center">
+                <div class="container mt-4">
+                    <h4 class="display-4">I miei ordini</h4>
+                </div>
+
+                <div class="table-responsive mt-4">
+                    <table id="orderTable" class="table thead-light">
+                        <thead>
+                            <tr>
+                                <th>Ordine</th>
+                                <th>Costo</th>
+                                <th>Tipo</th>
+                                <th>Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orderTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                    
+                <!-- Confirm/Error message -->
+                <div id="bconfmessage"></div>
+                
+                <div class="container mb-4">
+                    <div class="row">
+                        <div class="col-sm mt-4">
+                            <button class="btn btn-info" type="button" onclick="refreshBar()">Aggiorna</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete notify -->
+        <div class="modal fade" id="deleteNotify">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background-color: #F1F2F6;">
+                    <div class="modal-header mx-auto">
+                        <i class="fas fa-trash fa-4x"></i>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <h4> Vuoi eliminare le prenotazioni selezionate? </h4>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-footer mx-auto">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Annulla</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="deleteBooking()">Conferma</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment modal -->
+        <div class="modal fade" id="pay">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title mx-auto">Pagamento</h4>
+                    </div>
+                    
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form>
+                            <div class="container">
+                                <label for = "intestatario"> Intestatario Carta </label>
+                                <input class="form-control" id="intestatario" type="text" name="intestatario" placeholder="Intestatario carta" pattern="^([A-Za-z]{1,32}\s?){1,3}$" required>
+                            </div>
+
+                            <div class="container mt-3">
+                                <label for = "numeroCarta"> Numero Carta </label>
+                                <input class="form-control" id="numeroCarta" type="number" name="numeroCarta" placeholder="Numero carta" pattern="^[0-9]{16}$" required>
+                            </div>
+
+                            <div class="container mt-3">
+                                <label for = "dataScadenza"> Data di scadenza </label>
+                                <input class="form-control" id="dataScadenza" type="date" name="dataScadenza" id="date" placeholder="Data di scadenza" min="" required>
+                            </div>
+
+                            <div class="container mt-3">
+                                <label for = "cvv"> CVV </label>
+                                <input class="form-control" id="cvv" type="number" name="cvv" placeholder="CVV" pattern="^[0-9]{3}$" required>
+                            </div>
+
+                            <div class="form-group text-center mt-4">
+                                <button class="btn btn-info" type="submit" onclick="pay()">Paga</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!--Footer-->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-info ml-auto" data-dismiss="modal">Chiudi</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout notify -->
+        <div class="modal fade" id="logoutNotify">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background-color: #F1F2F6;">
+                    <div class="modal-header mx-auto">
+                        <i class="far fa-times-circle fa-4x" style="color: red;"></i>
+                    </div>
+
+                    <div class="modal-body mx-auto">
+                        <h4> Vuoi effettuare il logout? </h4>
+                    </div>
+
+                    <div class="modal-footer mx-auto">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Annulla</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="logout()">Conferma</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

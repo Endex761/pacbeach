@@ -1,6 +1,8 @@
 package com.pac.pacbeach.model;
 
 import com.pac.pacbeach.utils.XmlConverter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchProfile;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,13 +38,8 @@ public class Ordine
     @JoinColumn(name = "refPrenotazione", nullable = false)
     private Prenotazione prenotazione;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "prodottoOrdine",
-            joinColumns = { @JoinColumn(name = "refOrdine") },
-            inverseJoinColumns = { @JoinColumn(name = "refProdotto") }
-    )
-    private List<Prodotto> prodotti;
+    @OneToMany(mappedBy = "ordine")
+    private List<ProdottoOrdine> prodotti;
 
     public String toXmlString()
     {
@@ -56,6 +53,7 @@ public class Ordine
         setPagato(pagato);
         setConsegna(consegna);
         setCosto(costo);
+        setStato('A');
         setPrenotazione(prenotazione);
     }
 
@@ -107,11 +105,11 @@ public class Ordine
         this.prenotazione = prenotazione;
     }
 
-    public List<Prodotto> getProdotti() {
+    public List<ProdottoOrdine> getProdotti() {
         return prodotti;
     }
 
-    public void setProdotti(List<Prodotto> prodotti) {
+    public void setProdotti(List<ProdottoOrdine> prodotti) {
         this.prodotti = prodotti;
     }
 }

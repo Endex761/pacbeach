@@ -1,6 +1,8 @@
 package com.pac.pacbeach.dao;
 
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
+import com.pac.pacbeach.exceptions.EntityNotDeletedException;
+import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.utils.HibernateUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -21,8 +23,9 @@ public class Dao
      * Metodo per la creazione di un ogetto all'interno del Database
      * @param obj da creare
      * @throws DuplicatedEntryException se viene violata la chiave primaria
+     * @return oggetto aggiornato con id nel database
      */
-    protected static void create(Object obj) throws DuplicatedEntryException
+    protected static Object create(Object obj) throws DuplicatedEntryException
     {
         Session session = HibernateUtils.getSession();
 
@@ -34,6 +37,8 @@ public class Dao
             session.save(obj);
 
             transaction.commit();
+
+            return obj;
         }
         catch (ConstraintViolationException e)
         {
@@ -41,15 +46,19 @@ public class Dao
             if(e.getErrorCode() == 1062)
                 throw new DuplicatedEntryException();
 
+            assert transaction != null;
             transaction.rollback();
+
+            return null;
         }
+
     }
 
     /**
      * Aggiorna un ogetto all'interno del database
      * @param obj ogetto modificato
      */
-    protected static void update(Object obj)
+    protected static void update(Object obj) throws EntityNotUpdatedException
     {
         Session session = HibernateUtils.getSession();
 
@@ -66,7 +75,9 @@ public class Dao
         catch (HibernateException e)
         {
             e.printStackTrace();
+            assert transaction != null;
             transaction.rollback();
+            throw new EntityNotUpdatedException();
         }
     }
 
@@ -111,8 +122,9 @@ public class Dao
     /**
      * Elimina un ogetto dal database
      * @param obj ogetto da eliminare
+     * @throws EntityNotDeletedException se avviene un errore in fase di cancellazione
      */
-    protected static void delete(Object obj)
+    protected static void delete(Object obj) throws EntityNotDeletedException
     {
         Session session = HibernateUtils.getSession();
 
@@ -131,6 +143,7 @@ public class Dao
             e.printStackTrace();
             assert transaction != null;
             transaction.rollback();
+            throw new EntityNotDeletedException();
         }
 
     }

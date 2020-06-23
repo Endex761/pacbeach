@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class RequestValidator
 {
-    Map parameters;
+    Map<String, String[]> parameters;
     HttpServletRequest request;
 
     public RequestValidator(HttpServletRequest request)
@@ -20,7 +20,7 @@ public class RequestValidator
     }
 
     /**
-     * Funzione che restituice un parametro della richiesta http
+     * Funzione che restituisce un parametro della richiesta http
      * @param fieldName nome del parametro
      * @param required true se è un campo richiesto
      * @return valore del parametro richiesto
@@ -39,5 +39,23 @@ public class RequestValidator
     public String getParameter(String fieldName) throws ValidationException
     {
         return getParameter(fieldName, true);
+    }
+
+    public String getParameter(String fieldName, Boolean required, int minLength, int maxLength) throws ValidationException
+    {
+        String parameter = getParameter(fieldName, required);
+
+        if(parameter.length() < minLength)
+            throw new ValidationException(fieldName + ": lunghezza minima del campo " + minLength);
+
+        if(parameter.length() > maxLength)
+            throw new ValidationException(fieldName + ": lunghezza massima del campo " + maxLength);
+
+        return parameter;
+    }
+
+    public String getParameter(String fieldName, int maxLength) throws ValidationException
+    {
+        return getParameter(fieldName, true, 0, maxLength);
     }
 }

@@ -1,6 +1,7 @@
 package com.pac.pacbeach.dao;
 
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
+import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.model.Utente;
 
 import javax.persistence.NoResultException;
@@ -10,9 +11,9 @@ import javax.persistence.NoResultException;
  */
 public class UtenteDao extends Dao
 {
-    public static void creaUtente(Utente utente) throws DuplicatedEntryException
+    public static Utente creaUtente(Utente utente) throws DuplicatedEntryException
     {
-        create(utente);
+        return (Utente) create(utente);
     }
 
     public static Utente getUtente(String email) throws NoResultException
@@ -29,7 +30,7 @@ public class UtenteDao extends Dao
         return (Utente) getOne(queryString, idUtente);
     }
 
-    public static void aggiornaUtente(Utente utente)
+    public static void aggiornaUtente(Utente utente) throws EntityNotUpdatedException
     {
        update(utente);
     }

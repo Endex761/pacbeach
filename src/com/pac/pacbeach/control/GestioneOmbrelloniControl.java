@@ -29,8 +29,8 @@ public class GestioneOmbrelloniControl
         try
         {
             //Converto le date da stringa a timestamp
-            Timestamp orarioInizioDate = DateFormatter.formatDate(orarioInizio);
-            Timestamp orarioFineDate = DateFormatter.formatDate(orarioFine);
+            Timestamp orarioInizioDate = DateFormatter.format(orarioInizio);
+            Timestamp orarioFineDate = DateFormatter.format(orarioFine);
 
             //Prendo dal database la lista degli ombrelloni e delle prenotazioni comprese tra orarioInizio e orarioFine
             List<Ombrellone> ombrelloni = OmbrelloneDao.getOmbrelloni();

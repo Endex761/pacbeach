@@ -24,8 +24,8 @@ $(document).ready(function() {
                         $('#barButton').removeAttr('data-toggle');
                         $('#barButton').removeAttr('data-target');
                         break;
-                    case "amministratore":
-                        window.location.replace('./admin.html');
+                    case "barista":
+                        window.location.replace('./barista.html');
                         break;
                     case "bagnino":
                         window.location.replace('./lifeguard.html');
@@ -200,8 +200,8 @@ $(function() {
                             $('#barButton').removeAttr('data-toggle');
                             $('#barButton').removeAttr('data-target');
                             break;
-                        case "amministratore":
-                            window.location.replace('./admin.html');
+                        case "barista":
+                            window.location.replace('./barista.html');
                             break;
                         case "bagnino":
                             window.location.replace('./lifeguard.html');

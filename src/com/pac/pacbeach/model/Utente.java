@@ -23,7 +23,7 @@ public class Utente
 
     @Id @GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "idUtente")
-    private int id;
+    private int idUtente;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -77,12 +77,12 @@ public class Utente
         return prenotazioni;
     }
 
-    public int getId() {
-        return id;
+    public int getIdUtente() {
+        return idUtente;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUtente(int id) {
+        this.idUtente = id;
     }
 
     public String getEmail() {

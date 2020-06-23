@@ -1,7 +1,7 @@
 //Set tomorrow as first selectable data
-function setMinData() {
+function setMinData(inp) {
     var today = new Date();
-    var d = today.getDate() + 1;
+    var d = today.getDate();
     var m = today.getMonth()+1; //Inizia da 0
     var y = today.getFullYear();
     
@@ -14,7 +14,7 @@ function setMinData() {
     } 
 
     var tomorrow = y + '-' + m + '-' + d;
-    document.getElementById("date").setAttribute("min", tomorrow);
+    inp.setAttribute("min", tomorrow);
 }
 
 //Unlock custom time selector if the relative radio is checked
@@ -101,6 +101,7 @@ $(function() {
             success: function(xml) {
                 xml = $(xml);
                 var succ = xml.find('success').text();
+                var message = xml.find('message').text();
                 var content = xml.find('content');
 
                 if(succ == "true") {
@@ -121,11 +122,7 @@ $(function() {
                 }
             },
             error: function(data) {
-                if (data.responseText !== '') {
-                    alert(data.responseText);
-                } else {
-                    alert('Oops! Errore inaspettato!');
-                }
+                alert('Oops! Errore inaspettato!');
             }
         });
     });
@@ -144,7 +141,6 @@ function selectSeat(b) {
 
         var i = seats.indexOf(b.getAttribute("value"));
         seats.splice(i, 1);
-        console.log(seats);
     }
 }
 

@@ -56,7 +56,7 @@ public class Login extends HttpServlet {
 
                 //E inizializzo i parametri di sessione
                 session.setAttribute("email", u.getEmail());
-                session.setAttribute("idUtente", u.getId());
+                session.setAttribute("idUtente", u.getIdUtente());
                 session.setAttribute("ruolo", u.getRuolo());
 
                 //Rimuovo dalla risposta i dettagli dell'utente prima di mandarla

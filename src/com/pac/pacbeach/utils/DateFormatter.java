@@ -11,7 +11,13 @@ public class DateFormatter
 {
     private static final String pattern = "yyyy-MM-dd HH:mm:ss";
 
-    public static Timestamp formatDate(String dateString) throws ParseException
+    /**
+     * Trasforma una Stringa nel formato "yyyy-MM-ddTHH:mm:ss" nel relativo Timestamp
+     * @param dateString stringa contentete la data
+     * @return Timestamp relativo alla data
+     * @throws ParseException se il formato della stringa è errato
+     */
+    public static Timestamp format(String dateString) throws ParseException
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
 

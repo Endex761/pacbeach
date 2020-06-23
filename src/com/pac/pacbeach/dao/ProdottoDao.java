@@ -22,4 +22,11 @@ public class ProdottoDao extends Dao
 
         return (List<Prodotto>) get(queryString);
     }
+
+    public static Prodotto prodottoPerId(Integer id)
+    {
+        String queryString = "from Prodotto where idProdotto = ?0";
+
+        return (Prodotto) getOne(queryString, id);
+    }
 }

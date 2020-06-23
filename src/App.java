@@ -10,7 +10,9 @@ import com.pac.pacbeach.model.Prodotto;
 import com.pac.pacbeach.model.Utente;
 import com.pac.pacbeach.model.wrapper.WrapperArrayList;
 import com.pac.pacbeach.utils.Result;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
+import java.lang.reflect.Field;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Iterator;
@@ -21,6 +23,8 @@ public class App
 {
     public static void main(String[] args)
     {
+
+
         //List<Ordine> ordini = OrdineDao.ordiniPrenotazione(1);
 
         //Ordine o = ordini.get(0);

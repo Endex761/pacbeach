@@ -10,7 +10,15 @@ import javax.xml.bind.annotation.*;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({Utente.class, Prenotazione.class, Ombrellone.class, WrapperArrayList.class, Prodotto.class, Ordine.class, ProdottoOrdine.class})
+@XmlSeeAlso({
+        Utente.class,
+        Prenotazione.class,
+        Ombrellone.class,
+        WrapperArrayList.class,
+        Prodotto.class,
+        Ordine.class,
+        ProdottoOrdine.class
+})
 public class Result
 {
     private static final long serialVersionUID = 1L;

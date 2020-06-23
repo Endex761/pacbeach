@@ -1,13 +1,22 @@
-//Enable all tooltip
-$(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();   
-});
+//Custom Object with the info about a booking
+function Element(ts, te, n, i) {
+    this.timeStart = ts;
+    this.timeEnd = te;
+    this.name = n;
+};
 
-//Set tomorrow as first selectable data
-function setMinData() {
+//Create a bidimensional array with the bookings of a day
+//booking[i] is an array of Element with the info about the seat i
+var booking = new Array(25);
+
+$(document).ready(function(){
+    var form = $('#dt');
+    var formMessages = $('#dtconfmessage');
+
+    //Get the info about today
     var today = new Date();
-    var d = today.getDate() + 1;
-    var m = today.getMonth()+1; //Inizia da 0
+    var d = today.getDate();
+    var m = today.getMonth()+1; //Start from 0
     var y = today.getFullYear();
     
     if (d < 10) {
@@ -18,9 +27,51 @@ function setMinData() {
         m = '0' + m;
     } 
 
-    var tomorrow = y + '-' + m + '-' + d;
-    document.getElementById("date").setAttribute("min", tomorrow);
-}
+    var t = y + '-' + m + '-' + d;
+    
+    $('#date').attr('value', t);
+
+    //Formatting date/time value
+    var formData = "orarioInizio=" + t + "T08:00:00&orarioFine=" + t + "T20:00:00";
+
+    $.ajax({
+        type: 'GET',
+        url: $(form).attr('action'),
+        data: formData,
+        dataType: 'text xml',
+        success: function(xml) {
+            xml = $(xml);
+            var succ = xml.find('success').text();
+            var message = xml.find('message').text();
+            var content = xml.find('content');
+
+            if(succ) {
+                //Empty the array
+                var i;
+                
+                for(i = 0; i < booking.length; ++i) {
+                    booking[i] = [];
+                }
+
+                //Fill the array with the new data
+                content.find('element').each(function() {
+                    var timeStart = $(this).find('orarioInizio').text().substring(12,17);
+                    var timeEnd = $(this).find('orarioFine').text().substring(12,17);
+                    var name = $(this).find('utente').find('nome').text() + " " + $(this).find('utente').find('cognome').text();
+                    var index = parseInt($(this).find('ombrellone').find('idOmbrellone').text());
+        
+                    booking[index].push(new Element(timeStart, timeEnd, name));
+                });
+            } else {
+                $(formMessages).attr('style', 'color: red');
+                $(formMessages).text(message);
+            }
+        },
+        error: function(data) {
+            alert('Oops! Errore inaspettato!');
+        }
+    });
+})
 
 //Logout
 function logout() {
@@ -37,9 +88,26 @@ function logout() {
     });
 }
 
-//Get booking info for today and save them
-var booking = [];
+//Set tomorrow as first selectable data
+function setMinData(inp) {
+    var today = new Date();
+    var d = today.getDate() + 1;
+    var m = today.getMonth()+1; //Inizia da 0
+    var y = today.getFullYear();
+    
+    if (d < 10) {
+        d = '0' + d;
+    } 
+    
+    if (m < 10) {
+        m = '0' + m;
+    } 
 
+    var tomorrow = y + '-' + m + '-' + d;
+    inp.setAttribute("min", tomorrow);
+}
+
+//Get booking info for the selected day and save them
 $(function() {
     var form = $('#dt');
     var formMessages = $('#dtconfmessage');
@@ -61,40 +129,26 @@ $(function() {
             success: function(xml) {
                 xml = $(xml);
                 var succ = xml.find('success').text();
+                var message = xml.find('message').text();
                 var content = xml.find('content');
 
-                if(succ == "true") {
-                    content.find('element').each(function() {
-                        var element = $(this);
-                        var index = element.find('ombrellone').find('idOmbrellone').text();
-
-                        if(booking[index] == null) {
-                            booking[index] = element;
-                        } else {
-                            booking[index].push(element);
-                        }
-                    });
-                    console.log("Aggiunti tutti gli elementi!");
-
+                if(succ) {
+                    //Empty the array
                     var i;
-
+                    
                     for(i = 0; i < booking.length; ++i) {
-                        var nestedArray = booking[i];
-                        if(nestedArray != null) {
-                            if(nestedArray.length > 1) {
-                                console.log("Ordino le prenotazioni dell'ombrellone: "+i);
-
-                                nestedArray.sort((a, b) => (a.find('orarioFine').text() > b.find('orarioFine').text()) ? 1 : -1);
-                                /*for(j = 0; j < nestedArray.length; ++j) {
-                                    tmp[j] = nestedArray[j].find('orarioFine').text();
-                                }
-                                tmp.sort();
-                                for(j = 0; j < nestedArray.length; ++j) {
-                                    tmp1[j] = nestedArray[j].find('orarioFine').text();
-                                }*/
-                            }
-                        }
+                        booking[i] = [];
                     }
+    
+                    //Fill the array with the new data
+                    content.find('element').each(function() {
+                        var timeStart = $(this).find('orarioInizio').text().substring(12,17);
+                        var timeEnd = $(this).find('orarioFine').text().substring(12,17);
+                        var name = $(this).find('utente').find('nome').text() + " " + $(this).find('utente').find('cognome').text();
+                        var index = parseInt($(this).find('ombrellone').find('idOmbrellone').text());
+            
+                        booking[index].push(new Element(timeStart, timeEnd, name));
+                    });
                 } else {
                     $(formMessages).attr('style', 'color: red');
                     $(formMessages).text(message);
@@ -111,7 +165,10 @@ $(function() {
 function selectSeat(b) {
 
     if(b.getAttribute("class") == "btn btn-info") {
+        //Set button class
         b.setAttribute("class", "btn btn-outline-info");
+
+        //Empty the info list
         $('#info').empty();
     } else {
         //Set button class
@@ -131,16 +188,13 @@ function selectSeat(b) {
         var index = b.getAttribute("value");
         $('#info').append('<li>Ombrellone ' + index + ': </li>');
 
-        if(booking[index] == null) {
+        var iBooking = booking[index];
+
+        if(iBooking.length == 0) {
             $('#info').append('<li>Nessuna prenotazione prevista per oggi!</li>');
         } else {
-            var dayBooking = booking[index];
-
-            for(i = 0; i < dayBooking.length; ++i) {
-                var timeStart = dayBooking[i].find('orarioInizio').text().substring(11,16);
-                var timeEnd = dayBooking[i].find('orarioFine').text().substring(11,16);
-                var name = dayBooking[i].find('utente').find('nome').text() + " " + dayBooking.find('utente').find('cognome').text();
-                var toPrint = name + "   " + timeStart + " - " + timeEnd;
+            for(i = 0; i < iBooking.length; ++i) {
+                var toPrint = iBooking[i].name + "   " + iBooking[i].timeStart + " - " + iBooking[i].timeEnd;
                 $('#info').append('<li>' + toPrint + '</li>');
             }
         }

@@ -1,8 +1,9 @@
 package com.pac.pacbeach.dao;
 
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
+import com.pac.pacbeach.exceptions.EntityNotDeletedException;
+import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.model.Prenotazione;
-
 
 import javax.persistence.NoResultException;
 import java.sql.Timestamp;
@@ -47,9 +48,14 @@ public class PrenotazioneDao extends Dao
         create(prenotazione);
     }
 
-    public static void aggiornaPrenotazione(Prenotazione prenotazione)
+    public static void aggiornaPrenotazione(Prenotazione prenotazione) throws EntityNotUpdatedException
     {
         update(prenotazione);
+    }
+
+    public static void eliminaPrenotazione(Prenotazione prenotazione) throws EntityNotDeletedException
+    {
+        delete(prenotazione);
     }
 
 

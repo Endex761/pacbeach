@@ -21,73 +21,20 @@
         <!-- Font-awesome for icons -->
         <script src="https://kit.fontawesome.com/89a6b8d154.js" crossorigin="anonymous"></script>
 
+        <!-- Datatables  -->
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
         <!-- Style -->
         <link rel="stylesheet" href="css/cashier.css">
 
+        <!-- Script -->
+        <script src="js/cashier.js"></script>
+
         <title>PaC_Beach</title>
-        
-        <script>
-            //Enable all tooltip
-            $(document).ready(function(){
-                $('[data-toggle="tooltip"]').tooltip();   
-            });
-        </script>
-        
-		<script>
-			//Set tomorrow as first selectable data
-			function setMinData() {
-				var today = new Date();
-				var d = today.getDate() + 1;
-				var m = today.getMonth()+1; //Inizia da 0
-				var y = today.getFullYear();
-				
-				if (d < 10) {
-					d = '0' + d;
-				} 
-				
-				if (m < 10) {
-					m = '0' + m;
-				} 
-
-				var tomorrow = y + '-' + m + '-' + d;
-				document.getElementById("date").setAttribute("min", tomorrow);
-			}
-		</script>
-
-        <script>
-            //Get today's info
-            $(document).ready(function() {
-                var today = new Date();
-				var d = today.getDate();
-				var m = today.getMonth()+1; //Inizia da 0
-				var y = today.getFullYear();
-				
-				if (d < 10) {
-					d = '0' + d;
-				} 
-				
-				if (m < 10) {
-					m = '0' + m;
-				} 
-
-				var t = y + '-' + m + '-' + d;
-                $('#date').attr('value', t);
-
-                //TO DO
-                $.ajax({
-                    type: 'GET',
-                    url: '',
-                    data: t,
-                    success: function(xml) {
-                        if(xml.find('success') == "true") {
-                            $('#table').append(
-                                '<tr><td>' + xml.find('data') + '</td></tr>'
-                            )
-                        }
-                    }
-                })
-            })
-        </script>
     </head>
 
     <body>
@@ -99,7 +46,7 @@
         <!-- Logout -->
         <div class="container mb-3">
             <div class="d-flex flex-row-reverse"> 
-                <i class="fas fa-sign-out-alt fa-2x" onclick="logout()" data-toggle="tooltip" data-placement="top" title="Logout!"></i>
+                <i class="fas fa-sign-out-alt fa-2x" data-toggle="modal" data-target="#logoutNotify" type="button"></i>
             </div>
         </div>
 
@@ -107,15 +54,18 @@
         <div class="container mb-4">
             <div class="card text-center">
                 
-                <form action="/#" method="POST">
+                <form id="dt" action="./api/prenotazione" method="GET">
                     <!-- Select Data -->
                     <div class="container mt-4">
-                        <h4>Scegli la data</h4>
+                        <h4 class="display-4">Lista delle prenotazioni</h4>
                     </div>
 
-                    <div class="container form-group mt-2" style="padding-right: 10%; padding-left: 10%;">
-                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" min="" required>
+                    <div class="container form-group mt-4" style="padding-right: 10%; padding-left: 10%;">
+                        <input type="date" name="date" id="bdate" class="form-control" placeholder="Data" required>
                     </div>
+                    
+                    <!-- Confirm/Error message -->
+                    <div id="dtconfmessage"></div>
 
                     <div class="container mt-4 mb-4">
                         <button class="btn btn-info" type="submit">Conferma</button>
@@ -123,18 +73,48 @@
                 </form>
 
                 <div class="table-responsive">
-                    <table class="table thead-light">
+                    <table id="table" class="table thead-light">
                         <thead>
                             <tr>
                                 <th>Cliente</th>
-                                <th>Posti</th>
-                                <th>Tempo</th>
+                                <th>Posto</th>
+                                <th>Orario</th>
                                 <th>Costo</th>
                                 <th>Pagato</th>
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody id="table"></tbody>
+                        <tbody id="tableBody">
+                        </tbody>
                     </table>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <small class="font-italic">Seleziona le prenotazioni pagate in cassa premendo la "x" corrispondente, poi "Marca come pagate" per confermare.</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <small class="font-italic">Seleziona le prenotazioni da eliminare premendo il pulsante corrispondente, poi "Conferma eliminazione" per confermare.</small>
+                        </div>
+                    </div>
+                </div>
+                    
+                <!-- Confirm/Error message -->
+                <div id="pconfmessage"></div>
+
+                
+                <div class="container mb-4">
+                    <div class="row">
+                        <div class="col-sm mt-4">
+                            <button class="btn btn-info" type="button" id="confDel" data-toggle="modal" data-target="#deleteNotify" disabled>Conferma eliminazione</button>
+                        </div>
+                        <div class="col-sm mt-4">
+                            <button class="btn btn-info" type="button" id="confPay" data-toggle="modal" data-target="#paymentNotify" disabled>Marca come pagate</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,34 +123,33 @@
         <div class="container mb-4">
             <div class="card text-center">
                 
-                <form action="/api/prenotazione" method="POST">
-                    
+                <form id="dt" action="./api/ombrellone" method="GET">
+                    <!-- Select Data -->
                     <div class="container mt-4">
-                        <h4>Prenotazione</h4>
+                        <h4 class="display-4">Nuova prenotazione</h4>
                     </div>
 
-                    <!-- Select Data -->
-                    <div class="form-group container mt-2" style="padding-right: 10%; padding-left: 10%;">
-                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" min="" required>
+                    <div class="form-group container mt-4" style="padding-right: 10%; padding-left: 10%;">
+                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" onclick="setMinData(this)" required>
                     </div>
 
                     <!-- Select Hours -->
                     <div class="form-group container mt-4">
                         <div class="form-check-inline mr-4">
                             <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()" checked> Intera giornata - 8:00/20:00
+                                <input type="radio" class="form-check-input" name="time" id="day" onclick="unlockCustom()" required> Intera giornata - 8:00/20:00
                             </label>
                         </div>
 
                         <div class="form-check-inline mr-4">
                             <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()"> Mattina - 8:00/14:00
+                                <input type="radio" class="form-check-input" name="time" id="morning" onclick="unlockCustom()"> Mattina - 8:00/14:00
                             </label>
                         </div>
 
                         <div class="form-check-inline mr-4">
                             <label class="form-check-label">
-                                <input type="radio" class="form-check-input" name="time" onclick="unlockCustom()"> Pomeriggio - 14:00/20:00
+                                <input type="radio" class="form-check-input" name="time" id="afternoon" onclick="unlockCustom()"> Pomeriggio - 14:00/20:00
                             </label>
                         </div>
 
@@ -183,21 +162,149 @@
 
                     <div class="form-group container mt-2">
                         <label for="start">Dalle:</label>
-                        <input type="time" name="start" id="start" min="08:00" max="19:00" step="3600" pattern="[0-2][0-9]:00" onkeyup="setMinEnd()" onclick="setMinEnd()" disabled>
+                        <input type="time" name="start" id="startTime" value="08:00:00" min="08:00" max="19:00" step="3600" pattern="[0-2][0-9]:00" onclick="setMinEnd()" disabled>
 
                         <label for="end">Alle:</label>
-                        <input type="time" name="end" id="end" min="9:00" max="20:00" step="3600" pattern="[0-2][0-9]:00" disabled>
+                        <input type="time" name="end" id="endTime" value="09:00:00" min="9:00" max="20:00" step="3600" pattern="[0-2][0-9]:00" disabled>
+                    </div>
+                    
+                    <!-- Confirm/Error message -->
+                    <div id="dtconfmessage"></div>
+
+                    <div class="container mt-4 mb-4">
+                        <button class="btn btn-info" type="submit">Verifica disponibilità</button>
+                    </div>
+                </form>
+
+                <form id="ticket" action="./api/cassiere/prenotazione" method="POST">
+                    <!-- Select Seats -->
+                    <div class="container mt-4">
+                        <h4>Seleziona i posti</h4>
+                    </div>
+
+                    <div class="card mt-3 mx-auto" style="width: 90%; border: 0px;">
+                        <div class="card-header" style="background-color: #00b4d8;"></div>
+
+                        <div class="form-group card-body" style="background-color: #ffd66d;">
+                            <div class="container">
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="1" value="1" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="2" value="2" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="3" value="3" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="4" value="4" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="5" value="5" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="6" value="6" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="7" value="7" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="8" value="8" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="9" value="9" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="10" value="10" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="11" value="11" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="12" value="12" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="13" value="13" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="14" value="14" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="15" value="15" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="16" value="16" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="17" value="17" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="18" value="18" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="19" value="19" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="20" value="20" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="21" value="21" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="22" value="22" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="23" value="23" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-success" id="24" value="24" onclick="selectSeat(this)" disabled><i class="fas fa-umbrella-beach"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking info -->
+                    <div class="container mt-4">
+                        <h4>Inserisci le informazioni del cliente</h4>
+                    </div>
+
+                    <div class="form-group mt-4" style="padding-right: 10%; padding-left: 10%;">
+                        <label for="name">Nome</label>
+                        <input type="text" name="nome" id="name" class="form-control" placeholder="Nome" pattern="^[A-Za-z]{1,32}$" required>
+
+                        <label for="surname">Cognome</label>
+                        <input type="text" name="cognome" id="surname" class="form-control" placeholder="Cognome" pattern="^([A-Za-z]{1,32}\s?){1,2}$" required>
+
+                        <label for="phone">Numero di telefono</label>
+                        <input type="tel" name="telefono" id="phone" class="form-control" placeholder="Numero di telefono" pattern="^[0-9+]*$" required>
+
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="suemail" class="form-control" placeholder="Email" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" maxlength="100" required>
+                    </div>
+
+                    <!-- Guests -->
+                    <div class="container mt-4">
+                        <h4>Ospiti</h4>
                     </div>
 
                     <div class="form-group mt-4" id="guests" style="padding-right: 10%; padding-left: 10%;">
-                        <label for="guest1">Ospiti:</label>
-                        <input id="guest1" class="form-control" placeholder="Ospite 1" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$"></textarea>
+                        <label for="guest1">Inserisci Nome e Cognome di tutte le persone che verranno con te:</label>
+                        <input id="guest1" class="form-control" name="guest1" placeholder="Ospite 1" pattern="^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$"></textarea>
                     </div>
 
                     <div class="container mt-1">
-                        <button class="btn btn-success" onclick="addGuest()"><i class="fas fa-plus"></i></button>
+                        <button class="btn btn-success" onclick="addGuest()" type="button"><i class="fas fa-plus"></i></button>
                     </div>
 
+                    <!-- Confirm -->
                     <div class="container mt-4 mb-4">
                         <button class="btn btn-info" type="submit">Conferma</button>
                     </div>
@@ -205,20 +312,82 @@
             </div>
         </div>
 
-        <script>
-            function addGuest() {
-                if(document.getElementById("guest1").value != "") {
-                    event.preventDefault();
+        <!-- Delete notify -->
+        <div class="modal fade" id="deleteNotify">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background-color: #F1F2F6;">
+                    <div class="modal-header mx-auto">
+                        <i class="fas fa-trash fa-4x"></i>
+                    </div>
 
-                    var i = document.createElement("input");
-                    i.setAttribute("class","form-control mt-1");
-                    i.setAttribute("placeholder","Ospite");
-                    i.setAttribute("pattern","^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,45}$");
+                    <div class="modal-body text-center">
+                        <h4> Vuoi eliminare le prenotazioni selezionate? </h4>
+                    </div>
 
-                    var element = document.getElementById("guests");
-                    element.appendChild(i);
-                }
-            }
-        </script>
+                    <div class="modal-footer mx-auto">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Annulla</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="deleteBooking()">Conferma</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment notify -->
+        <div class="modal fade" id="paymentNotify">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background-color: #F1F2F6;">
+                    <div class="modal-header mx-auto">
+                        <i class="fas fa-cash-register fa-4x"></i>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <h4> Vuoi marcare la prenotazione come "pagata"? </h4>
+                    </div>
+
+                    <div class="modal-footer mx-auto">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Annulla</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="pay()">Conferma</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout notify -->
+        <div class="modal fade" id="logoutNotify">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background-color: #F1F2F6;">
+                    <div class="modal-header mx-auto">
+                        <i class="far fa-times-circle fa-4x" style="color: red;"></i>
+                    </div>
+
+                    <div class="modal-body mx-auto">
+                        <h4> Vuoi effettuare il logout? </h4>
+                    </div>
+
+                    <div class="modal-footer mx-auto">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Annulla</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="logout()">Conferma</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

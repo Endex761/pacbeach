@@ -4,6 +4,8 @@ import com.pac.pacbeach.dao.OmbrelloneDao;
 import com.pac.pacbeach.dao.PrenotazioneDao;
 import com.pac.pacbeach.dao.UtenteDao;
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
+import com.pac.pacbeach.exceptions.EntityNotDeletedException;
+import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.model.Ombrellone;
 import com.pac.pacbeach.model.Prenotazione;
 import com.pac.pacbeach.model.Utente;
@@ -23,12 +25,12 @@ public class GestionePrenotazioneControl
 {
     /**
      * Metodo per la creazione di una nuova prenotazione
-     * @param orarioInizio orario di inzio della prenotazione
+     * @param orarioInizio orario di inizio della prenotazione
      * @param orarioFine orario di fine della prenotazione
      * @param pagata indica se l'utente ha già pagato la prenotazione
      * @param ospiti lista degli ospiti dell'ombrellone
      * @param idUtente id dell'utente che ha effettuato la prenotazione
-     * @param idOmbrellone id delgli ombrelloni da prenotare (separati da ,)
+     * @param idOmbrellone id degli ombrelloni da prenotare (separati da ,)
      * @return oggetto Result con informazioni sullo stato della prenotazione
      */
     public static Result creaNuovaPrenotazione(String orarioInizio, String orarioFine, String pagata, String ospiti, Integer idUtente, String idOmbrellone)
@@ -46,8 +48,8 @@ public class GestionePrenotazioneControl
 
 
             //Converto le date da stringa a timestamp
-            Timestamp orarioInizioDate = DateFormatter.formatDate(orarioInizio);
-            Timestamp orarioFineDate = DateFormatter.formatDate(orarioFine);
+            Timestamp orarioInizioDate = DateFormatter.format(orarioInizio);
+            Timestamp orarioFineDate = DateFormatter.format(orarioFine);
 
             //Converto il flag pagato
             Boolean pagatoBoolean = Boolean.parseBoolean(pagata);
@@ -70,14 +72,14 @@ public class GestionePrenotazioneControl
                 }
             }
 
-            //Se tutti gli ombrelloni selezionati sono prenotabili creo le singole prenotazioni
+            //Se tutti gli ombrelloni selezionati sono prenotabile creo le singole prenotazioni
             if(tuttiLiberi)
             {
                 Utente utente = UtenteDao.getUtente(idUtente);
 
-                for(int i = 0; i < idOmbrelloniInt.length; ++i)
+                for(int id : idOmbrelloniInt)
                 {
-                    Ombrellone ombrellone = OmbrelloneDao.getOmbrellone(idOmbrelloniInt[i]);
+                    Ombrellone ombrellone = OmbrelloneDao.getOmbrellone(id);
 
                     Prenotazione prenotazione = new Prenotazione(orarioInizioDate, orarioFineDate, pagatoBoolean, costo, ospiti, utente, ombrellone);
 
@@ -111,6 +113,41 @@ public class GestionePrenotazioneControl
         }
     }
 
+    public static Result creaNuovaPrenotazione(String orarioInizio, String orarioFine, String pagata, String ospiti, String idOmbrellone, String nome, String cognome, String telefono, String email)
+    {
+        Result res;
+
+        //Genero una password casuale che manderò poi per email all'utente
+        String password = GestioneAccountControl.generaPasswordCasuale();
+
+        res = GestioneAccountControl.creaNuovoUtente(email, password, nome, cognome, telefono);
+
+        if(res.success())
+        {
+            Integer idUtente = (Integer) res.getContent();
+
+            res = creaNuovaPrenotazione(orarioInizio, orarioFine, pagata, ospiti, idUtente, idOmbrellone);
+        }
+        else
+        {
+            res = GestioneAccountControl.getUtenteByEmail(email);
+
+            if(res.success())
+            {
+                Utente u = (Utente) res.getContent();
+
+                Integer idUtente = u.getIdUtente();
+
+                res = creaNuovaPrenotazione(orarioInizio, orarioFine, pagata, ospiti, idUtente, idOmbrellone);
+            }
+        }
+
+
+
+        return res;
+
+    }
+
     /**
      * Metodo per ottenere l'elenco delle prenotazione in una fascia oraria
      * @param orarioInizio inizio fascia oraria
@@ -122,21 +159,25 @@ public class GestionePrenotazioneControl
         try
         {
             //Converto le date da stringa a timestamp
-            Timestamp orarioInizioDate = DateFormatter.formatDate(orarioInizio);
-            Timestamp orarioFineDate = DateFormatter.formatDate(orarioFine);
+            Timestamp orarioInizioDate = DateFormatter.format(orarioInizio);
+            Timestamp orarioFineDate = DateFormatter.format(orarioFine);
 
             List<Prenotazione> prenotazioni = PrenotazioneDao.getPrenotazioni(orarioInizioDate, orarioFineDate);
 
-            //TODO serve questo ciclo?
+            //Rimuovo i dettagli superflui dell'utente
             for(int i = 0; i < prenotazioni.size(); ++i)
             {
                 Prenotazione p = prenotazioni.get(i);
 
-                //p.setUtente(null);
-                //p.setPagata(null);
-                //p.setCosto(null);
-                //p.setEffettuata(null);
-                //p.setIdPrenotazione(null);
+                Utente u = p.getUtente();
+
+                u.setPassword(null);
+                u.setDataRegistrazione(null);
+                u.setRuolo(null);
+                u.setConfermaAccount(null);
+
+                p.setUtente(u);
+
                 prenotazioni.set(i, p);
             }
 
@@ -156,7 +197,7 @@ public class GestionePrenotazioneControl
     }
 
     /**
-     * Metodo che restitiuisce la lista delle prenotazioni relative ad un utente in una fascia oraria
+     * Metodo che restituisce la lista delle prenotazioni relative ad un utente in una fascia oraria
      * @param idUtente id dell'utente
      * @param orarioInizio inizio fascia oraria
      * @param orarioFine fine fascia oraria
@@ -167,21 +208,17 @@ public class GestionePrenotazioneControl
         try
         {
             //Converto le date da stringa a timestamp
-            Timestamp orarioInizioDate = DateFormatter.formatDate(orarioInizio);
-            Timestamp orarioFineDate = DateFormatter.formatDate(orarioFine);
+            Timestamp orarioInizioDate = DateFormatter.format(orarioInizio);
+            Timestamp orarioFineDate = DateFormatter.format(orarioFine);
 
             List<Prenotazione> prenotazioni = PrenotazioneDao.getPrenotazioniUtente(idUtente, orarioInizioDate, orarioFineDate);
 
-            //Rimuovo l'id dell'utente TODO serve davvero rimuoverlo?
+            //Rimuovo i dettagli dell'utente
             for(int i = 0; i < prenotazioni.size(); ++i)
             {
                 Prenotazione p = prenotazioni.get(i);
 
                 p.setUtente(null);
-                //p.setPagata(null);
-                //p.setCosto(null);
-                //p.setEffettuata(null);
-                //p.setIdPrenotazione(null);
                 prenotazioni.set(i, p);
             }
 
@@ -232,22 +269,79 @@ public class GestionePrenotazioneControl
     {
         try
         {
-            int idPrenotazioneInt = Integer.parseInt(idPrenotazione);
+            String[] idPrenotazioni =  idPrenotazione.split(",");
+            int[] idPrenotazioniInt = new int[idPrenotazioni.length];
 
-            Prenotazione prenotazioneDaAggiornare = PrenotazioneDao.getPrenotazione(idPrenotazioneInt);
+            for(int i=0; i<idPrenotazioniInt.length; ++i)
+            {
+                idPrenotazioniInt[i] = Integer.parseInt(idPrenotazioni[i]);
+            }
 
-            if(prenotazioneDaAggiornare.getPagata())
-                return new Result("Errore, prenotazione già pagata", false);
+            for(int id : idPrenotazioniInt)
+            {
+                Prenotazione prenotazioneDaAggiornare = PrenotazioneDao.getPrenotazione(id);
 
-            prenotazioneDaAggiornare.setPagata(true);
+                if(prenotazioneDaAggiornare.getPagata())
+                    return new Result("Errore, prenotazione già pagata", false);
 
-            PrenotazioneDao.aggiornaPrenotazione(prenotazioneDaAggiornare);
+                prenotazioneDaAggiornare.setPagata(true);
+
+                PrenotazioneDao.aggiornaPrenotazione(prenotazioneDaAggiornare);
+            }
 
             return new Result("Prenotazione pagata con successo.");
         }
         catch (NoResultException e)
         {
-            return new Result("Errore, codice prenotazione inesistente.");
+            return new Result("Errore, codice prenotazione inesistente.", false);
+        }
+        catch (EntityNotUpdatedException e)
+        {
+            return new Result("Errore aggiornamento prenotazione.");
+        }
+
+    }
+
+    public static Result eliminaPrenotazione(String idPrenotazione, Integer idUtente)
+    {
+        try
+        {
+            String[] idPrenotazioni =  idPrenotazione.split(",");
+            int[] idPrenotazioniInt = new int[idPrenotazioni.length];
+
+            for(int i=0; i<idPrenotazioniInt.length; ++i)
+            {
+                idPrenotazioniInt[i] = Integer.parseInt(idPrenotazioni[i]);
+            }
+
+            for (int id : idPrenotazioniInt)
+            {
+                Prenotazione p;
+                try
+                {
+                    p = PrenotazioneDao.getPrenotazione(id);
+                }
+                catch (NoResultException e)
+                {
+                    continue;
+                }
+
+                if (p.getUtente().getIdUtente() == idUtente)
+                {
+                    PrenotazioneDao.eliminaPrenotazione(p);
+                }
+            }
+
+            return new Result("Prenotazione eliminata con successo");
+
+        }
+        catch(NumberFormatException e)
+        {
+            return new Result("Formato id prenotazione errato", false);
+        }
+        catch(EntityNotDeletedException e)
+        {
+            return new Result("Errore durante l'eliminazione della prenotazione", false);
         }
 
     }

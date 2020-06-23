@@ -1,6 +1,7 @@
 package com.pac.pacbeach.dao;
 
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
+import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.model.Ombrellone;
 
 import javax.persistence.NoResultException;
@@ -30,7 +31,7 @@ public class OmbrelloneDao extends Dao
         return (List<Ombrellone>) get(queryString);
     }
 
-    public static void aggiornaOmbrellone(Ombrellone ombrellone)
+    public static void aggiornaOmbrellone(Ombrellone ombrellone) throws EntityNotUpdatedException
     {
         update(ombrellone);
     }

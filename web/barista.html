@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+    <head>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Font-awesome for icons -->
+        <script src="https://kit.fontawesome.com/89a6b8d154.js" crossorigin="anonymous"></script>
+
+        <!-- Datatables  -->
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+        <!-- Style -->
+        <link rel="stylesheet" href="css/barista.css">
+
+        <!-- Script -->
+        <script src="js/barista.js"></script>
+
+        <title>PaC_Beach</title>
+    </head>
+
+    <body>
+        <!-- Logo -->
+        <div class="container">
+            <a href="./home.html"><img src="img/logo.png" alt="Logo" class="mx-auto d-block"></a>
+        </div>
+
+        <!-- Logout -->
+        <div class="container mb-3">
+            <div class="d-flex flex-row-reverse"> 
+                <i class="fas fa-sign-out-alt fa-2x" data-toggle="modal" data-target="#logoutNotify" type="button"></i>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="container mb-4">
+            <div class="card text-center">
+                <div class="container mt-4">
+                    <h4 class="display-4">Ordini</h4>
+                </div>
+
+                <div class="table-responsive mt-4">
+                    <table id="table" class="table thead-light">
+                        <thead>
+                            <tr>
+                                <th>Ordine</th>
+                                <th>Costo</th>
+                                <th>Tipo</th>
+                                <th>Stato</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+                    
+                <!-- Confirm/Error message -->
+                <div id="confmessage"></div>
+
+                <div class="container mb-4">
+                    <div class="row">
+                        <div class="col-sm mt-4">
+                            <button class="btn btn-info" type="button" onclick="refreshBar()">Aggiorna</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update status modal -->
+        <div class="modal fade" id="updateStatusModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <form id="upOrder" action="./api/barista" method="POST">
+                    <div class="modal-content" style="background-color: #F1F2F6;">
+                        <div class="modal-header mx-auto">
+                            <h4>Modifica Stato Ordine</h4>
+                        </div>
+
+                        <div class="modal-body mx-auto">
+                            <label for="name">ID Ordine</label>
+                            <input type="text" name="idOrdine" id="idOrdineModifica" class="form-control"readonly>
+
+                            <!-- Select status -->
+                            <div class="form-group container mt-4">
+                                <div class="form-check-inline mr-4">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="stato" id="ready" required> Pronto
+                                    </label>
+                                </div>
+        
+                                <div class="form-check-inline mr-4">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="stato" id="delivering"> In consegna
+                                    </label>
+                                </div>
+        
+                                <div class="form-check-inline mr-4">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="stato" id="delivered"> Consegnato
+                                    </label>
+                                </div>
+                            </div>
+                    
+                            <!-- Confirm/Error message -->
+                            <div id="uconfmessage"></div>
+                        </div>
+
+                        <div class="modal-footer mx-auto">
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Annulla</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-success" type="submit">Conferma</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Logout notify -->
+        <div class="modal fade" id="logoutNotify">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background-color: #F1F2F6;">
+                    <div class="modal-header mx-auto">
+                        <i class="far fa-times-circle fa-4x" style="color: red;"></i>
+                    </div>
+
+                    <div class="modal-body mx-auto">
+                        <h4> Vuoi effettuare il logout? </h4>
+                    </div>
+
+                    <div class="modal-footer mx-auto">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Annulla</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-success" type="button" data-dismiss="modal" onclick="logout()">Conferma</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
