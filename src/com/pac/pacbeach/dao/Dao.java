@@ -68,7 +68,7 @@ public class Dao
         {
             transaction = session.beginTransaction();
 
-            session.update(obj);
+            session.merge(obj);
 
             transaction.commit();
         }

@@ -62,7 +62,6 @@ public class Prenotazione
         setUtente(utente);
         setOmbrellone(ombrellone);
         effettuata = new Timestamp(System.currentTimeMillis());
-
     }
 
     public String toXmlString()

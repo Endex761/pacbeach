@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 @XmlRootElement(name = "ordine")
@@ -32,8 +33,9 @@ public class Ordine
     private Float costo;
 
     @Column(name = "stato", nullable = false)
-    private Character stato;
+    private String stato;
 
+    @XmlTransient
     @ManyToOne
     @JoinColumn(name = "refPrenotazione", nullable = false)
     private Prenotazione prenotazione;
@@ -53,7 +55,7 @@ public class Ordine
         setPagato(pagato);
         setConsegna(consegna);
         setCosto(costo);
-        setStato('A');
+        setStato("A");
         setPrenotazione(prenotazione);
     }
 
@@ -89,11 +91,11 @@ public class Ordine
         this.costo = costo;
     }
 
-    public Character getStato() {
+    public String getStato() {
         return stato;
     }
 
-    public void setStato(Character stato) {
+    public void setStato(String stato) {
         this.stato = stato;
     }
 

@@ -8,6 +8,7 @@
 
         <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
         <!-- Popper JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -22,7 +23,6 @@
         <script src="https://kit.fontawesome.com/89a6b8d154.js" crossorigin="anonymous"></script>
 
         <!-- Datatables  -->
-        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
@@ -33,6 +33,12 @@
 
         <!-- Script -->
         <script src="js/barista.js"></script>
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+        <link rel="manifest" href="img/favicon/site.webmanifest">
 
         <title>PaC_Beach</title>
     </head>
@@ -62,6 +68,7 @@
                         <thead>
                             <tr>
                                 <th>Ordine</th>
+                                <th>Prodotti</th>
                                 <th>Costo</th>
                                 <th>Tipo</th>
                                 <th>Stato</th>
@@ -89,7 +96,7 @@
         <!-- Update status modal -->
         <div class="modal fade" id="updateStatusModal">
             <div class="modal-dialog modal-dialog-centered">
-                <form id="upOrder" action="./api/barista" method="POST">
+                <form id="upOrder" action="./api/ordine" method="PUT">
                     <div class="modal-content" style="background-color: #F1F2F6;">
                         <div class="modal-header mx-auto">
                             <h4>Modifica Stato Ordine</h4>

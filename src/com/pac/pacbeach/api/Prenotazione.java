@@ -1,5 +1,6 @@
 package com.pac.pacbeach.api;
 
+import com.pac.pacbeach.control.GestioneOrdiniControl;
 import com.pac.pacbeach.control.GestionePrenotazioneControl;
 import com.pac.pacbeach.dao.PrenotazioneDao;
 import com.pac.pacbeach.exceptions.UserNotLoggedInException;
@@ -56,13 +57,18 @@ public class Prenotazione extends HttpServlet {
 
         try
         {
-            String orarioInizio = r.getParameter("orarioInizio");
-            String orarioFine = r.getParameter("orarioFine");
-            //TODO remove System.out.println(sessionManager.getLoggedUserRole());
+            String orarioInizio = r.getParameter("orarioInizio", false);
+            String orarioFine = r.getParameter("orarioFine", false);
+
+
             if(sessionManager.getLoggedUserRole().equals("utente"))
             {
                 Integer idUtente = sessionManager.getLoggedUserId();
-                res = GestionePrenotazioneControl.elencoPrenotazioniUtente(idUtente, orarioInizio, orarioFine);
+
+                if(orarioInizio == null && orarioFine == null)
+                    res = GestionePrenotazioneControl.elencoPrenotazioniUtente(idUtente);
+                else
+                    res = GestionePrenotazioneControl.elencoPrenotazioniUtente(idUtente, orarioInizio, orarioFine);
             }
             else
             {
@@ -79,6 +85,8 @@ public class Prenotazione extends HttpServlet {
     }
 
 
+
+    @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.setContentType("text/xml");
@@ -94,7 +102,12 @@ public class Prenotazione extends HttpServlet {
             String idPrenotazioni = r.getParameter("idPrenotazione");
             int idUtente = sessionManager.getLoggedUserId();
 
-            res = GestionePrenotazioneControl.eliminaPrenotazione(idPrenotazioni, idUtente);
+            boolean privilegiato = false;
+
+            if(sessionManager.getLoggedUserRole().equals("cassiere"))
+                privilegiato = true;
+
+            res = GestionePrenotazioneControl.eliminaPrenotazione(idPrenotazioni, idUtente, privilegiato);
         }
         catch (ValidationException | UserNotLoggedInException e)
         {

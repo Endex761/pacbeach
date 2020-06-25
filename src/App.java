@@ -9,6 +9,7 @@ import com.pac.pacbeach.model.Prenotazione;
 import com.pac.pacbeach.model.Prodotto;
 import com.pac.pacbeach.model.Utente;
 import com.pac.pacbeach.model.wrapper.WrapperArrayList;
+import com.pac.pacbeach.utils.PasswordStorage;
 import com.pac.pacbeach.utils.Result;
 import com.sun.org.apache.xpath.internal.operations.Or;
 
@@ -17,13 +18,23 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class App
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws PasswordStorage.CannotPerformOperationException
     {
 
+        Scanner s = new Scanner(System.in);
+
+        System.out.print("Inserisci password: ");
+
+        String password = s.nextLine();
+
+        password = PasswordStorage.createHash(password);
+
+        System.out.println("Password criptata: " + password);
 
         //List<Ordine> ordini = OrdineDao.ordiniPrenotazione(1);
 

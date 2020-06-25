@@ -6,7 +6,7 @@ function refreshBar() {
 
     $.ajax({
         type: 'GET',
-        url: './api/barista',
+        url: './api/ordine',
         success: function(xml) {
             xml = $(xml);
             var succ = xml.find('success').text();
@@ -15,7 +15,10 @@ function refreshBar() {
 
             if(succ) {
                 //Empty the table
-                $('#tableBody').remove();
+                var tab = document.getElementById("table");
+                for(var i = tab.rows.length - 1; i > 0; i--) {
+                    tab.deleteRow(i);
+                }
 
                 //Fill the table with the new data
                 content.find('element').each(function() {
@@ -23,6 +26,12 @@ function refreshBar() {
                     var price = $(this).find('costo').text();
                     var delivery = $(this).find('consegna').text();
                     var status = $(this).find('stato').text();
+
+                    var prodotti = new Array();
+                    content.find('prodotti').each(function() {
+                        var toInsert = $(this).find('quantita').text() + " x " + $(this).find('prodotto').find('nome').text();
+                        prodotti.push(toInsert);
+                    })
 
                     if(delivery == "true") {
                         delivery = "Consegna";
@@ -48,7 +57,7 @@ function refreshBar() {
                             break;
                     }
 
-                    $('#tableBody').append('<tr><td>' + idOrder + '</td><td>€' + price + '</td><td>' + delivery + '</td><td>' + status + '</td><td><button class="btn btn-info" type="button" onclick="openStatusModal(' + idOrder + ')">Modifica stato</button></td></tr>');
+                    $('#table').append('<tr><td>' + idOrder + '</td><td>' + prodotti.toString() + '</td><td>€' + price + '</td><td>' + delivery + '</td><td>' + status + '</td><td><button class="btn btn-info" type="button" onclick="openStatusModal(' + idOrder + ')">Modifica stato</button></td></tr>');
                 });
             } else {
                 $(formMessages).attr('style', 'color: red');
@@ -63,7 +72,7 @@ function refreshBar() {
 
 //Open the modal to change the status of an order and pass the order ID
 function openStatusModal(idToSend) {
-    $('#updateStatusModal').modal('toggle');
+    $('#updateStatusModal').modal();
     $('#idOrdineModifica').val(idToSend);
 }
 
@@ -85,12 +94,9 @@ $(function() {
             status = "D";
         }
 
-        var formData = "idOrdine=" + $('#idOrdineModifica').val() + "&stato=" + status;
-
         $.ajax({
-            type: 'POST',
-            url: $(form).attr('action'),
-            data: formData,
+            type: 'PUT',
+            url: $(form).attr('action') + "?idOrdine=" + $('#idOrdineModifica').val() + "&stato=" + status,
             dataType: 'text xml',
             success: function(xml) {
                 xml = $(xml);
@@ -98,8 +104,7 @@ $(function() {
                 var message = xml.find('message').text();
 
                 if(succ == "true") {
-                    $(formMessages).attr('style', 'color: green');
-                    $(formMessages).text(message);
+                    $('#updateStatusModal').modal('hide');
                 } else {
                     $(formMessages).attr('style', 'color: red');
                     $(formMessages).text(message);

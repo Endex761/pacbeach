@@ -46,4 +46,11 @@ public class OrdineDao extends Dao
         update(o);
     }
 
+    public static Ordine ordinePerId(Integer idOrdine) throws NoResultException
+    {
+        String queryString = "from Ordine where idOrdine = ?0";
+
+        return (Ordine) getOne(queryString, idOrdine);
+    }
+
 }

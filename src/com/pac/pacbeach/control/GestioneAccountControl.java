@@ -75,7 +75,6 @@ public class GestioneAccountControl
                 u.setPassword(null);
                 u.setNome(null);
                 u.setCognome(null);
-                u.setConfermaAccount(null);
                 u.setDataRegistrazione(null);
                 u.setTelefono(null);
 

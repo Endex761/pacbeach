@@ -23,19 +23,25 @@ $(document).ready(function() {
                     var id = $(this).find('idProdotto').text();
                     var price = $(this).find('prezzo').text();
                     var available = $(this).find('disponibile').text();
-                    //var limited = $(this).find('consumabile').text();
-                    var quantity = $(this).find('quantita').text();
-
-                    if(counter % 3 == 0) {
-                        ++rowNum;
-                        $('#menu').append('<div id="row' + rowNum + '" class="row mb-4"></div>');
-                    }
+                    var limited = $(this).find('consumabile').text();
+                    var quantity = $(this).find('pezzi').text();
 
                     if(available == "true") {
-                        $('#row' + rowNum).append('<div class="col-4"><div class="card"><div class="cardcontainer"><h4>' + name + '</h4><p class="font-italic">' + details + '</p><ul class="list-unstyled info"><li>Prezzo: €' + price + '</li><li>Disponibili: ' + quantity + '</li></ul><button class="btn btn-light mb-2" onclick="addToCart(\'' + name + '\',' + price + ',' + id + ')" type="button"><i class="fas fa-shopping-cart fa-2x"></i></button></div></div></div>');
-                    } else {
-                        $('#row' + rowNum).append('<div class="col-4"><div class="card"><div class="cardcontainer"><h4>' + name + '</h4><p class="font-italic">' + details + '</p><ul class="list-unstyled info"><li>Prezzo: €' + price + '</li><li>Disponibili: ' + quantity + '</li></ul><button class="btn btn-light mb-2" onclick="addToCart(\'' + name + '\',' + price + ',' + id + ')" type="button" disabled><i class="fas fa-shopping-cart fa-2x"></i></button></div></div></div>');
+
+                        if(counter % 3 == 0) {
+                            ++rowNum;
+                            $('#menu').append('<div id="row' + rowNum + '" class="row mb-4"></div>');
+                        }
+
+                        if(limited == "true") {
+                            $('#row' + rowNum).append('<div class="col-4"><div class="card"><div class="cardcontainer"><h4>' + name + '</h4><p class="font-italic">' + details + '</p><ul class="list-unstyled info"><li>Prezzo: €' + price + '</li><li>Disponibili: ' + quantity + '</li></ul><button class="btn btn-light mb-2" onclick="addToCart(\'' + name + '\',' + price + ',' + id + ')" type="button"><i class="fas fa-shopping-cart fa-2x"></i></button></div></div></div>');
+                        } else {
+                            
+                            $('#row' + rowNum).append('<div class="col-4"><div class="card"><div class="cardcontainer"><h4>' + name + '</h4><p class="font-italic">' + details + '</p><ul class="list-unstyled info"><li>Prezzo: €' + price + '</li></ul><button class="btn btn-light mb-2" onclick="addToCart(\'' + name + '\',' + price + ',' + id + ')" type="button"><i class="fas fa-shopping-cart fa-2x"></i></button></div></div></div>');
+                        }
                     }
+
+                    ++counter;
                 });
             } else {
                 $(formMessages).attr('style', 'color: red');
@@ -76,7 +82,8 @@ function addToCart(nameToAdd, priceToAdd, idToAdd) {
     tot += parseFloat(priceToAdd);
     $('#tot').text(tot);
 
-    $('#payButton').removeAttr('disabled');
+    $('#payButton1').removeAttr('disabled');
+    $('#payButton2').removeAttr('disabled');
 }
 
 //Remove an item from the shopping cart
@@ -100,43 +107,58 @@ function deleteRow(idToRemove, priceToRemove) {
     $('#tot').text(tot);
 
     if(tot == 0) {
-        $('#payButton').attr('disabled', 'true');
+        $('#payButton1').attr('disabled', 'true');
+        $('#payButton2').attr('disabled', 'true');
     }
 }
 
 //Payment and order confirmation
-function pay() {
+$(function() {
+    var form = $('#barForm');
     var formMessages = $('#bookingconfmessage');
-    
-    var delivery = true;
-    if($('#takeaway').is(':checked')) {
-        delivery = false;
-    }
 
-    var formData = "idProdotto=" + cart.toString() + "&costo=" + tot + "&consegna=" + delivery;
+    $(form).submit(function(event) {
+        event.preventDefault();
 
-    $.ajax({
-        type: 'POST',
-        url: './api/prodotto',
-        data: formData,
-        dataType: 'text xml',
-        success: function(xml) {
-            xml = $(xml);
-            var succ = xml.find('success').text();
-            var message = xml.find('message').text();
+        //Check if paid
+        var paid;
 
-            if(succ == "true") {
-                $(formMessages).attr('style', 'color: green');
-                $(formMessages).text(message);
-            } else {
-                $(formMessages).attr('style', 'color: red');
-                $(formMessages).text(message);
-            }
-
-            $('#successNotify').modal('toggle');
-        },
-        error: function(data) {
-            alert('Oops! Errore inaspettato!');
+        if(($('#pay').data('bs.modal') || {})._isShown) {
+            paid = "true";
+        } else {
+            paid = "false";
         }
+    
+        var delivery = true;
+        if($('#takeaway').is(':checked')) {
+            delivery = false;
+        }
+
+        var formData = "idProdotto=" + cart.toString() + "&costo=" + tot + "&consegna=" + delivery + "&pagata=" + paid;
+
+        $.ajax({
+            type: 'POST',
+            url: $(form).attr('action'),
+            data: formData,
+            dataType: 'text xml',
+            success: function(xml) {
+                xml = $(xml);
+                var succ = xml.find('success').text();
+                var message = xml.find('message').text();
+
+                if(succ == "true") {
+                    $(formMessages).attr('style', 'color: green');
+                    $(formMessages).text(message);
+                } else {
+                    $(formMessages).attr('style', 'color: red');
+                    $(formMessages).text(message);
+                }
+
+                $('#successNotify').modal('toggle');
+            },
+            error: function(data) {
+                alert('Oops! Errore inaspettato!');
+            }
+        });
     });
-}
+})

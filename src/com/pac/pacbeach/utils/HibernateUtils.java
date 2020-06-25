@@ -66,7 +66,7 @@ public class HibernateUtils
         if(!serverStarted)
         {
             Session s = getSession();
-            Query q = s.createQuery("from Ombrellone where id=1");
+            Query q = s.createQuery("from Prodotto where id=1");
             q.getResultList();
 
             serverStarted = true;

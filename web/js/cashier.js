@@ -66,8 +66,8 @@ $(document).ready(function() {
             if(succ) {
                 //Fill the array with the new data
                 content.find('element').each(function() {
-                    var timeStart = $(this).find('orarioInizio').text().substring(12,17);
-                    var timeEnd = $(this).find('orarioFine').text().substring(12,17);
+                    var timeStart = $(this).find('orarioInizio').text().substring(11,16);
+                    var timeEnd = $(this).find('orarioFine').text().substring(11,16);
                     var name = $(this).find('utente').find('nome').text() + " " + $(this).find('utente').find('cognome').text();
                     var id = $(this).find('idPrenotazione').text();
                     var price = $(this).find('costo').text();
@@ -102,25 +102,6 @@ $(document).ready(function() {
     });
 })
 
-//Set tomorrow as first selectable data
-function setMinData(inp) {
-    var today = new Date();
-    var d = today.getDate() + 1;
-    var m = today.getMonth()+1; //Inizia da 0
-    var y = today.getFullYear();
-    
-    if (d < 10) {
-        d = '0' + d;
-    } 
-    
-    if (m < 10) {
-        m = '0' + m;
-    } 
-
-    var tomorrow = y + '-' + m + '-' + d;
-    inp.setAttribute("min", tomorrow);
-}
-
 //Get booking info for the selected day
 $(function() {
     var form = $('#dt');
@@ -148,12 +129,12 @@ $(function() {
     
                 if(succ) {
                     //Empty the table
-                    $('#tableBody').remove();
+                    tab.clear().draw();
 
                     //Fill the table with the new data
                     content.find('element').each(function() {
-                        var timeStart = $(this).find('orarioInizio').text().substring(12,17);
-                        var timeEnd = $(this).find('orarioFine').text().substring(12,17);
+                        var timeStart = $(this).find('orarioInizio').text().substring(11,16);
+                        var timeEnd = $(this).find('orarioFine').text().substring(11,16);
                         var name = $(this).find('utente').find('nome').text() + " " + $(this).find('utente').find('cognome').text();
                         var id = $(this).find('idPrenotazione').text();
                         var price = $(this).find('costo').text();
@@ -264,14 +245,14 @@ function markToDelete(b) {
     }
 }
 
-//Confirm booking payment
+//Confirm booking delete
 function deleteBooking() {
     var formMessages = $('#pconfmessage');
     var formData = "idPrenotazione=" + toDelete.toString();
 
     $.ajax({
         type: 'DELETE',
-        url: './api/prenotazione&' + formData,
+        url: './api/prenotazione?' + formData,
         dataType: 'text xml',
         success: function(xml) {
             xml = $(xml);
@@ -292,20 +273,105 @@ function deleteBooking() {
     });
 }
 
-//Unlock custom time selector if the relative radio is checked
-function unlockCustom() {
-    if(document.getElementById('customTime').checked) {
-        document.getElementById('startTime').disabled = false;
-        document.getElementById('endTime').disabled = false;
+//Set the current day as first selectable data for booking
+function setMinData(inp) {
+    var today = new Date();
+    var d = today.getDate();
+    var m = today.getMonth()+1; //Inizia da 0
+    var y = today.getFullYear();
+    
+    if (d < 10) {
+        d = '0' + d;
+    } 
+    
+    if (m < 10) {
+        m = '0' + m;
+    } 
+
+    var t = y + '-' + m + '-' + d;
+    inp.setAttribute("min", t);
+}
+
+//If the user select the current day, set the min time value as the current time
+function setMinTime(inp) {
+    $('#confDTButton').removeAttr('disabled');
+    var today = new Date();
+
+    if($(inp).val() == $(inp).attr('min')) {
+        var now = today.getHours();
+        var changeTime = true;
+
+        //Disable fixed slots if the booking time exceed the starting time
+        if(now >= 8 && now < 14) { //Booking between 8:00 (incl) and 14:00 (excl)
+            $('#day').attr('disabled', 'true');
+            $('#morning').attr('disabled', 'true');
+        } else if(now >= 14 && now < 19) { //Booking between 14:00 (incl) and 19:00 (excl)
+            $('#day').attr('disabled', 'true');
+            $('#morning').attr('disabled', 'true');
+            $('#afternoon').attr('disabled', 'true');
+        } else if(now >= 19) { //Booking after 19:00 (incl)
+            $('#day').attr('disabled', 'true');
+            $('#morning').attr('disabled', 'true');
+            $('#afternoon').attr('disabled', 'true');
+            $('#customTime').attr('disabled', 'true');
+            $('#confDTButton').attr('disabled', 'true');
+            changeTime = false;
+        }
+
+        //Update custom time restriction
+        if(changeTime) {
+            ++now;
+            var next = now + 1;
+
+            now.toString();
+            next.toString();
+
+            now = now + ":00";
+            next = next + ":00";
+
+            if(now < 10) {
+                now = '0' + now;
+            }
+
+            if(next < 10) {
+                next = '0' + next;
+            }
+
+            $('#startTime').attr('min', now);
+            $('#startTime').attr('value', now);
+            $('#endTime').attr('min', next);
+            $('#endTime').attr('value', next);
+        }
     } else {
-        document.getElementById('startTime').disabled = true;
-        document.getElementById('endTime').disabled = true;
+        $('#day').removeAttr('disabled');
+        $('#morning').removeAttr('disabled');
+        $('#afternoon').removeAttr('disabled');
+        $('#customTime').removeAttr('disabled');
+    }
+}
+
+//Unlock custom time selector if the relative radio is checked and set a payment base
+var payBase = 0;
+
+function unlockCustom() {
+    if($('#day').is(':checked')) {
+        payBase = 15;
+        $('#startTime').attr('disabled', 'true');
+        $('#endTime').attr('disabled', 'true');
+    } else if($('#customTime').is(':checked')) {
+        payBase = 2;
+        $('#startTime').removeAttr('disabled');
+        $('#endTime').removeAttr('disabled');
+    } else {
+        payBase = 8;
+        $('#startTime').attr('disabled', 'true');
+        $('#endTime').attr('disabled', 'true');
     }
 }
 
 //Set min end time selector as (start time + 1h)
 function setMinEnd() {
-    var startInput = document.getElementById('startTime').value;
+    var startInput = $('#startTime').val();
     var minEndHoursI = parseInt(startInput.substr(0,2)) + 1;
     var minEndHours = minEndHoursI.toString();
     var minEnd = minEndHours + ':00';
@@ -314,7 +380,12 @@ function setMinEnd() {
         minEnd = '0' + minEnd;
     }
 
-    document.getElementById('endTime').setAttribute("min", minEnd);
+    $('#endTime').attr('min', minEnd);
+}
+
+function setHourPayment() {
+    var numHours = parseInt($('#endTime').val().substring(0,2)) - parseInt($('#startTime').val().substring(0,2));
+    payBase = 2 * numHours;
 }
 
 //Add another guest field when the button is clicked
@@ -342,8 +413,8 @@ var start;
 var end;
 
 $(function() {
-    var form = $('#dt');
-    var formMessages = $('#dtconfmessage');
+    var form = $('#dtBooking');
+    var formMessages = $('#dtbconfmessage');
 
     $(form).submit(function(event) {
         event.preventDefault();
@@ -417,6 +488,8 @@ function selectSeat(b) {
         var i = seats.indexOf(b.getAttribute("value"));
         seats.splice(i, 1);
     }
+
+    $('#tot').text(payBase * seats.length);
 }
 
 //Submit booking form

@@ -27,6 +27,12 @@
         <!-- Script -->
         <script src="js/ticket.js"></script>
 
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+        <link rel="manifest" href="img/favicon/site.webmanifest">
+
         <title>PaC_Beach</title>
     </head>
 
@@ -61,7 +67,7 @@
                     </div>
 
                     <div class="form-group container mt-2" style="padding-right: 10%; padding-left: 10%;">
-                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" onclick="setMinData(this)" required>
+                        <input type="date" name="date" id="date" class="form-control" placeholder="Data" onclick="setMinData(this)" oninput="setMinTime(this)" required>
                     </div>
 
                     <!-- Select Hours -->
@@ -93,17 +99,17 @@
 
                     <div class="form-group container mt-2">
                         <label for="start">Dalle:</label>
-                        <input type="time" name="start" id="startTime" value="08:00:00" min="08:00" max="19:00" step="3600" pattern="[0-2][0-9]:00" onkeyup="setMinEnd()" onclick="setMinEnd()" disabled>
+                        <input type="time" name="start" id="startTime" value="08:00:00" min="08:00" max="19:00" step="3600" pattern="[0-2][0-9]:00" onclick="setMinEnd()" disabled>
 
                         <label for="end">Alle:</label>
-                        <input type="time" name="end" id="endTime" value="09:00:00" min="9:00" max="20:00" step="3600" pattern="[0-2][0-9]:00" disabled>
+                        <input type="time" name="end" id="endTime" value="09:00:00" min="9:00" max="20:00" step="3600" pattern="[0-2][0-9]:00" oninput="setHourPayment()" disabled>
                     </div>
                     
                     <!-- Confirm/Error message -->
                     <div id="dtconfmessage"></div>
 
                     <div class="container mt-4 mb-4">
-                        <button class="btn btn-info" type="submit">Verifica disponibilità</button>
+                        <button id="confDTButton" class="btn btn-info" type="submit">Verifica disponibilità</button>
                     </div>
                 </form>
 
@@ -214,6 +220,17 @@
 
                     <div class="container mt-1">
                         <button class="btn btn-success" onclick="addGuest()" type="button"><i class="fas fa-plus"></i></button>
+                    </div>
+
+                    <div class="container mt-4">
+                        <div class="row">
+                            <div class="col-6 text-left">
+                                <h4>Totale</h4>
+                            </div>
+                            <div class="col-6 text-right">
+                                <h4>€ <small id="tot"></small></h4>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Confirm -->

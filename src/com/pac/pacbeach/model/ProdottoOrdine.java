@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 
 @XmlRootElement(name = "prodottoOrdine")
@@ -23,21 +24,23 @@ public class ProdottoOrdine implements Serializable
 
 
     @Column(name = "costo", nullable = false)
-    private Float costo;
+    private Float costoUnitario;
+
 
 
     @ManyToOne
     @JoinColumn(name = "refProdotto", nullable = false)
     private Prodotto prodotto;
 
+    @XmlTransient
     @ManyToOne
     @JoinColumn(name = "refOrdine", nullable = false)
     private Ordine ordine;
 
-    public ProdottoOrdine(Integer quantita, Float costo, Prodotto p, Ordine o)
+    public ProdottoOrdine(Integer quantita, Float costoUnitario, Prodotto p, Ordine o)
     {
         setQuantita(quantita);
-        setCosto(costo);
+        setCostoUnitario(costoUnitario);
         setProdotto(p);
         setOrdine(o);
     }
@@ -52,12 +55,12 @@ public class ProdottoOrdine implements Serializable
         this.quantita = quantita;
     }
 
-    public Float getCosto() {
-        return costo;
+    public Float getCostoUnitario() {
+        return costoUnitario;
     }
 
-    public void setCosto(Float costo) {
-        this.costo = costo;
+    public void setCostoUnitario(Float costo) {
+        this.costoUnitario = costo;
     }
 
     public Prodotto getProdotto() {

@@ -10,6 +10,7 @@ import com.pac.pacbeach.model.Prenotazione;
 import com.pac.pacbeach.model.Prodotto;
 import com.pac.pacbeach.dao.ProdottoDao;
 import com.pac.pacbeach.model.ProdottoOrdine;
+import com.pac.pacbeach.model.wrapper.WrapperArrayList;
 import com.pac.pacbeach.utils.Result;
 
 import javax.persistence.NoResultException;
@@ -67,7 +68,16 @@ public class GestioneOrdiniControl
 
             for (int idProdotto : prodotti.keySet())
             {
-                Prodotto p = ProdottoDao.prodottoPerId(idProdotto);
+                Prodotto p;
+
+                try
+                {
+                    p = ProdottoDao.prodottoPerId(idProdotto);
+                }
+                catch (NoResultException e)
+                {
+                    continue;
+                }
 
                 int quantity = prodotti.get(idProdotto);
 
@@ -76,6 +86,13 @@ public class GestioneOrdiniControl
                 ProdottoOrdine po = new ProdottoOrdine(quantity, p.getPrezzo(), p, o);
 
                 ProdottoOrdineDao.creaProdottoOrdine(po);
+
+                if(p.getConsumabile())
+                {
+                    p.setPezzi(p.getPezzi() - quantity);
+
+                    ProdottoDao.aggiorna(p);
+                }
             }
 
             o.setCosto(totale);
@@ -104,6 +121,74 @@ public class GestioneOrdiniControl
 
     public static Result listaOrdiniUtente(Integer idUtente)
     {
-        return null;
+        try
+        {
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+            List<Prenotazione> prenotazioniUtente = PrenotazioneDao.getPrenotazioniUtente(idUtente, now, now);
+
+            if(prenotazioniUtente.size() == 0)
+                throw new NoResultException();
+
+            Prenotazione prenotazione = prenotazioniUtente.get(0);
+
+            List<Ordine> ordini = OrdineDao.ordiniPrenotazione(prenotazione.getIdPrenotazione());
+
+            if(ordini.size() == 0)
+                throw new NoResultException();
+
+            WrapperArrayList<Ordine> ordiniWrappedArrayList = new WrapperArrayList<>(ordini);
+
+            return new Result(ordiniWrappedArrayList, "Ordini utente");
+
+        }
+        catch (NoResultException e)
+        {
+            return new Result("Nessuna prenotazione attiva o nessun ordine", false);
+        }
     }
+
+    public static Result listaOrdiniDaConsegnare()
+    {
+        try
+        {
+            List<Ordine> ordini = OrdineDao.ordiniDaConsegnare();
+
+            if(ordini.size() == 0)
+                throw new NoResultException();
+
+            WrapperArrayList<Ordine> ordiniWrappedArrayList = new WrapperArrayList<>(ordini);
+
+            return new Result(ordiniWrappedArrayList, "Ordini da consegnare");
+        }
+        catch (NoResultException e)
+        {
+            return new Result("Nessun ordine da evadere", false);
+        }
+    }
+
+    public static Result aggiornaStatoOrdine(String idOrdine, String stato)
+    {
+        try
+        {
+            int idOrdineInt = Integer.parseInt(idOrdine);
+
+            Ordine o = OrdineDao.ordinePerId(idOrdineInt);
+
+            o.setStato(stato);
+
+            OrdineDao.aggiornaOrdine(o);
+
+            return new Result("Stato ordine aggiornato correttamente");
+        }
+        catch (NoResultException e)
+        {
+            return new Result("Nessun ordine con l'id fornito", false);
+        }
+        catch (EntityNotUpdatedException e)
+        {
+            return new Result("Errore aggiornamento stato", false);
+        }
+    }
+
 }

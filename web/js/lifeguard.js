@@ -1,5 +1,5 @@
 //Custom Object with the info about a booking
-function Element(ts, te, n, i) {
+function Element(ts, te, n) {
     this.timeStart = ts;
     this.timeEnd = te;
     this.name = n;
@@ -55,8 +55,8 @@ $(document).ready(function(){
 
                 //Fill the array with the new data
                 content.find('element').each(function() {
-                    var timeStart = $(this).find('orarioInizio').text().substring(12,17);
-                    var timeEnd = $(this).find('orarioFine').text().substring(12,17);
+                    var timeStart = $(this).find('orarioInizio').text().substring(11,16);
+                    var timeEnd = $(this).find('orarioFine').text().substring(11,16);
                     var name = $(this).find('utente').find('nome').text() + " " + $(this).find('utente').find('cognome').text();
                     var index = parseInt($(this).find('ombrellone').find('idOmbrellone').text());
         
@@ -88,10 +88,10 @@ function logout() {
     });
 }
 
-//Set tomorrow as first selectable data
+//Set todayas first selectable data
 function setMinData(inp) {
     var today = new Date();
-    var d = today.getDate() + 1;
+    var d = today.getDate();
     var m = today.getMonth()+1; //Inizia da 0
     var y = today.getFullYear();
     
@@ -103,8 +103,8 @@ function setMinData(inp) {
         m = '0' + m;
     } 
 
-    var tomorrow = y + '-' + m + '-' + d;
-    inp.setAttribute("min", tomorrow);
+    var t = y + '-' + m + '-' + d;
+    inp.setAttribute("min", t);
 }
 
 //Get booking info for the selected day and save them
@@ -142,8 +142,8 @@ $(function() {
     
                     //Fill the array with the new data
                     content.find('element').each(function() {
-                        var timeStart = $(this).find('orarioInizio').text().substring(12,17);
-                        var timeEnd = $(this).find('orarioFine').text().substring(12,17);
+                        var timeStart = $(this).find('orarioInizio').text().substring(11,16);
+                        var timeEnd = $(this).find('orarioFine').text().substring(11,16);
                         var name = $(this).find('utente').find('nome').text() + " " + $(this).find('utente').find('cognome').text();
                         var index = parseInt($(this).find('ombrellone').find('idOmbrellone').text());
             

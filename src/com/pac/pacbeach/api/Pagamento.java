@@ -30,10 +30,9 @@ public class Pagamento extends HttpServlet {
         {
             String idPrenotazioni = r.getParameter("idPrenotazione");
 
-            if(sessionManager.getLoggedUserRole().equals("utente"))
-                res = new Result("Operazione non consentita", false);
-            else
-                res = GestionePrenotazioneControl.impostaComePagata(idPrenotazioni);
+            sessionManager.isLoggedIn();
+
+            res = GestionePrenotazioneControl.impostaComePagata(idPrenotazioni);
         }
         catch (ValidationException | UserNotLoggedInException e)
         {

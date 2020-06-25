@@ -40,9 +40,6 @@ public class Utente
     @Column(name = "telefono", nullable = false)
     private String telefono;
 
-    @Column(name = "confermaAccount", nullable = false)
-    private Boolean confermaAccount;
-
     @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "dataRegistrazione", nullable = false)
     private Timestamp dataRegistrazione;
@@ -66,7 +63,6 @@ public class Utente
         setNome(nome);
         setCognome(cognome);
         setTelefono(telefono);
-        setConfermaAccount(true);
         setRuolo(ruolo);
         setDataRegistrazione(new Timestamp(System.currentTimeMillis()));
     }
@@ -123,14 +119,6 @@ public class Utente
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public Boolean getConfermaAccount() {
-        return confermaAccount;
-    }
-
-    public void setConfermaAccount(Boolean confermaAccount) {
-        this.confermaAccount = confermaAccount;
     }
 
     public Timestamp getDataRegistrazione() {

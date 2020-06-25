@@ -27,6 +27,12 @@
         <!-- Script -->
         <script src="js/lifeguard.js"></script>
 
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+        <link rel="manifest" href="img/favicon/site.webmanifest">
+
         <title>PaC_Beach</title>
     </head>
 
@@ -55,14 +61,14 @@
                     </div>
 
                     <div class="form-group container mt-2" style="padding-right: 10%; padding-left: 10%;">
-                        <input type="date" name="date" class="form-control" placeholder="Data" onclick="setMinData(this)" required>
+                        <input type="date" id="date" name="date" class="form-control" placeholder="Data" onclick="setMinData(this)" required>
                     </div>
                     
                     <!-- Confirm/Error message -->
                     <div id="dtconfmessage"></div>
 
                     <div class="container mt-4 mb-4">
-                        <button class="btn btn-info" type="button" onclick="test()">Conferma</button>
+                        <button class="btn btn-info" type="submit">Conferma</button>
                     </div>
                 </form>
 

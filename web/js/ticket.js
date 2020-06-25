@@ -1,4 +1,4 @@
-//Set tomorrow as first selectable data
+//Set the current day as first selectable data
 function setMinData(inp) {
     var today = new Date();
     var d = today.getDate();
@@ -13,24 +13,90 @@ function setMinData(inp) {
         m = '0' + m;
     } 
 
-    var tomorrow = y + '-' + m + '-' + d;
-    inp.setAttribute("min", tomorrow);
+    var t = y + '-' + m + '-' + d;
+    inp.setAttribute("min", t);
 }
 
-//Unlock custom time selector if the relative radio is checked
-function unlockCustom() {
-    if(document.getElementById('customTime').checked) {
-        document.getElementById('startTime').disabled = false;
-        document.getElementById('endTime').disabled = false;
+//If the user select the current day, set the min time value as the current time
+function setMinTime(inp) {
+    $('#confDTButton').removeAttr('disabled');
+    var today = new Date();
+
+    if($(inp).val() == $(inp).attr('min')) {
+        var now = today.getHours();
+        var changeTime = true;
+
+        //Disable fixed slots if the booking time exceed the starting time
+        if(now >= 8 && now < 14) { //Booking between 8:00 (incl) and 14:00 (excl)
+            $('#day').attr('disabled', 'true');
+            $('#morning').attr('disabled', 'true');
+        } else if(now >= 14 && now < 19) { //Booking between 14:00 (incl) and 19:00 (excl)
+            $('#day').attr('disabled', 'true');
+            $('#morning').attr('disabled', 'true');
+            $('#afternoon').attr('disabled', 'true');
+        } else if(now >= 19) { //Booking after 19:00 (incl)
+            $('#day').attr('disabled', 'true');
+            $('#morning').attr('disabled', 'true');
+            $('#afternoon').attr('disabled', 'true');
+            $('#customTime').attr('disabled', 'true');
+            $('#confDTButton').attr('disabled', 'true');
+            changeTime = false;
+        }
+
+        //Update custom time restriction
+        if(changeTime) {
+            ++now;
+            var next = now + 1;
+
+            now.toString();
+            next.toString();
+
+            now = now + ":00";
+            next = next + ":00";
+
+            if(now < 10) {
+                now = '0' + now;
+            }
+
+            if(next < 10) {
+                next = '0' + next;
+            }
+
+            $('#startTime').attr('min', now);
+            $('#startTime').attr('value', now);
+            $('#endTime').attr('min', next);
+            $('#endTime').attr('value', next);
+        }
     } else {
-        document.getElementById('startTime').disabled = true;
-        document.getElementById('endTime').disabled = true;
+        $('#day').removeAttr('disabled');
+        $('#morning').removeAttr('disabled');
+        $('#afternoon').removeAttr('disabled');
+        $('#customTime').removeAttr('disabled');
+    }
+}
+
+//Unlock custom time selector if the relative radio is checked and set a payment base
+var payBase = 0;
+
+function unlockCustom() {
+    if($('#day').is(':checked')) {
+        payBase = 15;
+        $('#startTime').attr('disabled', 'true');
+        $('#endTime').attr('disabled', 'true');
+    } else if($('#customTime').is(':checked')) {
+        payBase = 2;
+        $('#startTime').removeAttr('disabled');
+        $('#endTime').removeAttr('disabled');
+    } else {
+        payBase = 8;
+        $('#startTime').attr('disabled', 'true');
+        $('#endTime').attr('disabled', 'true');
     }
 }
 
 //Set min end time selector as (start time + 1h)
 function setMinEnd() {
-    var startInput = document.getElementById('startTime').value;
+    var startInput = $('#startTime').val();
     var minEndHoursI = parseInt(startInput.substr(0,2)) + 1;
     var minEndHours = minEndHoursI.toString();
     var minEnd = minEndHours + ':00';
@@ -39,7 +105,12 @@ function setMinEnd() {
         minEnd = '0' + minEnd;
     }
 
-    document.getElementById('endTime').setAttribute("min", minEnd);
+    $('#endTime').attr('min', minEnd);
+}
+
+function setHourPayment() {
+    var numHours = parseInt($('#endTime').val().substring(0,2)) - parseInt($('#startTime').val().substring(0,2));
+    payBase = 2 * numHours;
 }
 
 //Add another guest field when the button is clicked
@@ -142,6 +213,8 @@ function selectSeat(b) {
         var i = seats.indexOf(b.getAttribute("value"));
         seats.splice(i, 1);
     }
+
+    $('#tot').text(payBase * seats.length);
 }
 
 //Submit booking form

@@ -27,6 +27,12 @@
         <!-- Script -->
         <script src="js/bar.js"></script>
 
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+        <link rel="manifest" href="img/favicon/site.webmanifest">
+
         <title>PaC_Beach</title>
     </head>
 
@@ -37,7 +43,7 @@
         </div>
 
         <div class="container mt-4 mb-4">
-            <form id="dt" action="./api/prenotazione" method="GET">
+            <form id="barForm" action="./api/ordine" method="POST">
                 <!-- Menù -->
                 <div class="card text-center" style="background-color: #f0d7ad;">
                     <div class="container mt-4">
@@ -99,8 +105,16 @@
                     <!-- Confirm/Error message -->
                     <div id="confmessage"></div>
 
-                    <div class="container mt-4 mb-4">
-                        <button class="btn btn-info" id="payButton" type="button" data-toggle="modal" data-target="#pay" disabled>Procedi al pagamento</button>
+                    <!-- Confirm -->
+                    <div class="container mb-4">
+                        <div class="row">
+                            <div class="col-sm mt-4">
+                                <button class="btn btn-info" id="payButton1" data-toggle="modal" data-target="#pay" type="button" disabled>Conferma e paga ora</button>
+                            </div>
+                            <div class="form-group col-sm mt-4">
+                                <button class="btn btn-info" id="payButton2" type="submit" disabled>Conferma e paga al lido</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -116,31 +130,29 @@
                             
                             <!-- Modal body -->
                             <div class="modal-body">
-                                <form>
-                                    <div class="container">
-                                        <label for = "intestatario"> Intestatario Carta </label>
-                                        <input class="form-control" id="intestatario" type="text" name="intestatario" placeholder="Intestatario carta" pattern="^([A-Za-z]{1,32}\s?){1,3}$" required>
-                                    </div>
-        
-                                    <div class="container mt-3">
-                                        <label for = "numeroCarta"> Numero Carta </label>
-                                        <input class="form-control" id="numeroCarta" type="number" name="numeroCarta" placeholder="Numero carta" pattern="^[0-9]{16}$" required>
-                                    </div>
-        
-                                    <div class="container mt-3">
-                                        <label for = "dataScadenza"> Data di scadenza </label>
-                                        <input class="form-control" id="dataScadenza" type="date" name="dataScadenza" id="date" placeholder="Data di scadenza" min="" required>
-                                    </div>
-        
-                                    <div class="container mt-3">
-                                        <label for = "cvv"> CVV </label>
-                                        <input class="form-control" id="cvv" type="number" name="cvv" placeholder="CVV" pattern="^[0-9]{3}$" required>
-                                    </div>
-        
-                                    <div class="form-group text-center mt-4">
-                                        <button class="btn btn-info" type="submit" onclick="pay()">Paga</button>
-                                    </div>
-                                </form>
+                                <div class="container">
+                                    <label for = "intestatario"> Intestatario Carta </label>
+                                    <input id="intestatario" type="text" name="intestatario" placeholder="Intestatario carta" pattern="^([A-Za-z]{1,32}\s?){1,3}$">
+                                </div>
+    
+                                <div class="container mt-3">
+                                    <label for = "numeroCarta"> Numero Carta </label>
+                                    <input id="numeroCarta" type="number" name="numeroCarta" placeholder="Numero carta" pattern="^[0-9]{16}$">
+                                </div>
+    
+                                <div class="container mt-3">
+                                    <label for = "dataScadenza"> Data di scadenza </label>
+                                    <input id="dataScadenza" type="date" name="dataScadenza" id="date" placeholder="Data di scadenza" min="">
+                                </div>
+    
+                                <div class="container mt-3">
+                                    <label for = "cvv"> CVV </label>
+                                    <input id="cvv" type="number" name="cvv" placeholder="CVV" pattern="^[0-9]{3}$">
+                                </div>
+    
+                                <div class="form-group text-center mt-4">
+                                    <button class="btn btn-info" type="submit">Paga</button>
+                                </div>
                             </div>
         
                             <!--Footer-->

@@ -1,5 +1,6 @@
 package com.pac.pacbeach.dao;
 
+import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.model.Prodotto;
 
 import java.util.List;
@@ -28,5 +29,10 @@ public class ProdottoDao extends Dao
         String queryString = "from Prodotto where idProdotto = ?0";
 
         return (Prodotto) getOne(queryString, id);
+    }
+
+    public static void aggiorna(Prodotto p) throws EntityNotUpdatedException
+    {
+        update(p);
     }
 }

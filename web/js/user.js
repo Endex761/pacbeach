@@ -42,8 +42,6 @@ $(document).ready(function() {
             var content = xml.find('content');
 
             if(succ) {
-                $('#welcome').text(content.find('element').find('utente').find('nome').text());
-
                 //Fill the table with the new data
                 content.find('element').each(function() {
                     var date = new Date($(this).find('orarioInizio').text());
@@ -61,8 +59,8 @@ $(document).ready(function() {
                     } 
                 
                     var dateString = d + '-' + m + '-' + y;
-                    var timeStart = $(this).find('orarioInizio').text().substring(12,17);
-                    var timeEnd = $(this).find('orarioFine').text().substring(12,17);
+                    var timeStart = $(this).find('orarioInizio').text().substring(11,16);
+                    var timeEnd = $(this).find('orarioFine').text().substring(11,16);
                     var id = $(this).find('idPrenotazione').text();
                     var price = $(this).find('costo').text();
                     var index = parseInt($(this).find('ombrellone').find('idOmbrellone').text());
@@ -86,16 +84,16 @@ $(document).ready(function() {
                     ]).draw(false);
                 });
             } else {
-                $('#welcome').text('Le mie prenotazioni');
                 $(formMessages).attr('style', 'color: red');
                 $(formMessages).text(message);
             }
         },
         error: function(data) {
-            $('#welcome').text('Le mie prenotazioni');
             alert('Oops! Errore inaspettato!');
         }
     });
+
+    $('#orderTableBody').append('<tr><td>ok</td><td>');
 
     //Get all the orders
     refreshBar()
@@ -125,33 +123,40 @@ function markAsPaid(b) {
 }
 
 //Confirm booking payment
-function pay() {
+$(function() {
+    var form = $('#payForm');
     var formMessages = $('#pconfmessage');
-    var formData = "idPrenotazione=" + paid.toString();
 
-    $.ajax({
-        type: 'POST',
-        url: './api/pagamento',
-        data: formData,
-        dataType: 'text xml',
-        success: function(xml) {
-            xml = $(xml);
-            var succ = xml.find('success').text();
-            var message = xml.find('message').text();
+    $(form).submit(function(event) {
+        event.preventDefault();
 
-            if(succ == "true") {
-                $(formMessages).attr('style', 'color: green');
-                $(formMessages).text(message);
-            } else {
-                $(formMessages).attr('style', 'color: red');
-                $(formMessages).text(message);
+        var formData = "idPrenotazione=" + paid.toString();
+
+        $.ajax({
+            type: 'POST',
+            url: $(form).attr('action'),
+            data: formData,
+            dataType: 'text xml',
+            success: function(xml) {
+                xml = $(xml);
+                var succ = xml.find('success').text();
+                var message = xml.find('message').text();
+
+                if(succ == "true") {
+                    $(formMessages).attr('style', 'color: green');
+                    $(formMessages).text(message);
+                    location.reload();
+                } else {
+                    $(formMessages).attr('style', 'color: red');
+                    $(formMessages).text(message);
+                }
+            },
+            error: function(data) {
+                alert('Oops! Errore inaspettato!');
             }
-        },
-        error: function(data) {
-            alert('Oops! Errore inaspettato!');
-        }
+        });
     });
-}
+})
 
 //Select booking to delete
 var toDelete = [];
@@ -183,7 +188,7 @@ function deleteBooking() {
 
     $.ajax({
         type: 'DELETE',
-        url: './api/prenotazione&' + formData,
+        url: './api/prenotazione?' + formData,
         dataType: 'text xml',
         success: function(xml) {
             xml = $(xml);
@@ -193,6 +198,7 @@ function deleteBooking() {
             if(succ == "true") {
                 $(formMessages).attr('style', 'color: green');
                 $(formMessages).text(message);
+                location.reload();
             } else {
                 $(formMessages).attr('style', 'color: red');
                 $(formMessages).text(message);
@@ -210,7 +216,7 @@ function refreshBar() {
 
     $.ajax({
         type: 'GET',
-        url: './api/barista',
+        url: './api/ordine',
         success: function(xml) {
             xml = $(xml);
             var succ = xml.find('success').text();
@@ -219,7 +225,10 @@ function refreshBar() {
 
             if(succ) {
                 //Empty the table
-                $('#orderTableBody').remove();
+                var tab = document.getElementById("orderTable");
+                for(var i = tab.rows.length - 1; i > 0; i--) {
+                    tab.deleteRow(i);
+                }
 
                 //Fill the table with the new data
                 content.find('element').each(function() {
@@ -227,6 +236,12 @@ function refreshBar() {
                     var price = $(this).find('costo').text();
                     var delivery = $(this).find('consegna').text();
                     var status = $(this).find('stato').text();
+
+                    var prodotti = new Array();
+                    content.find('prodotti').each(function() {
+                        var toInsert = $(this).find('quantita').text() + " x " + $(this).find('prodotto').find('nome').text();
+                        prodotti.push(toInsert);
+                    })
 
                     if(delivery == "true") {
                         delivery = "Consegna al tuo ombrellone";
@@ -252,7 +267,7 @@ function refreshBar() {
                             break;
                     }
 
-                    $('#orderTableBody').append('<tr><td>' + idOrder + '</td><td>€' + price + '</td><td>' + delivery + '</td><td>' + status + '</td></tr>');
+                    $('#orderTable').append('<tr><td>' + idOrder + '</td><td>' + prodotti.toString() + '</td><td>€' + price + '</td><td>' + delivery + '</td><td>' + status + '</td></tr>');
                 });
             } else {
                 $(formMessages).attr('style', 'color: red');

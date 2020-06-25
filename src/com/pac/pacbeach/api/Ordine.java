@@ -33,7 +33,7 @@ public class Ordine extends HttpServlet
         {
             String idProdotto = r.getParameter("idProdotto");
             String consegna = r.getParameter("consegna");
-            String pagato = r.getParameter("pagato");
+            String pagato = r.getParameter("pagata");
 
             Integer idUtente = sessionManager.getLoggedUserId();
 
@@ -47,7 +47,68 @@ public class Ordine extends HttpServlet
         response.getWriter().write(res.toXmlString());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        response.setContentType("text/xml");
+
+        RequestValidator r = new RequestValidator(request);
+
+        SessionManager sessionManager = new SessionManager(request);
+
+        Result res;
+
+        try
+        {
+
+            if(sessionManager.getLoggedUserRole().equals("utente"))
+            {
+                Integer idUtente = sessionManager.getLoggedUserId();
+                res = GestioneOrdiniControl.listaOrdiniUtente(idUtente);
+            }
+            else
+            {
+                res = GestioneOrdiniControl.listaOrdiniDaConsegnare();
+            }
+        }
+        catch (UserNotLoggedInException e)
+        {
+            res = new Result(e.getMessage(), false);
+        }
+
+        response.getWriter().write(res.toXmlString());
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        response.setContentType("text/xml");
+
+        RequestValidator r = new RequestValidator(request);
+
+        SessionManager sessionManager = new SessionManager(request);
+
+        Result res;
+
+        try
+        {
+            String idOrdine = r.getParameter("idOrdine");
+            String stato = r.getParameter("stato", true, 1,1);
+
+            if(sessionManager.getLoggedUserRole().equals("barista"))
+            {
+                res = GestioneOrdiniControl.aggiornaStatoOrdine(idOrdine, stato);
+            }
+            else
+            {
+                res = new Result("Non autorizzato", false);
+            }
+
+        }
+        catch (ValidationException | UserNotLoggedInException e)
+        {
+            res = new Result(e.getMessage(), false);
+        }
+
+        response.getWriter().write(res.toXmlString());
     }
 }

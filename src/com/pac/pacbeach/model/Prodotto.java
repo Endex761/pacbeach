@@ -35,7 +35,7 @@ public class Prodotto
     private Boolean consumabile;
 
     @Column(name = "quantita", nullable = false)
-    private Integer quantita;
+    private Integer pezzi;
 
     public Prodotto() {}
 
@@ -51,7 +51,7 @@ public class Prodotto
         setPrezzo(prezzo);
         setDisponibile(disponibile);
         setConsumabile(consumabile);
-        setQuantita(quantita);
+        setPezzi(quantita);
     }
 
     public Integer getIdProdotto() {
@@ -104,11 +104,11 @@ public class Prodotto
         this.consumabile = consumabile;
     }
 
-    public Integer getQuantita() {
-        return quantita;
+    public Integer getPezzi() {
+        return pezzi;
     }
 
-    public void setQuantita(Integer quantita) {
-        this.quantita = quantita;
+    public void setPezzi(Integer quantita) {
+        this.pezzi = quantita;
     }
 }

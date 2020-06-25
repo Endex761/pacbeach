@@ -43,13 +43,12 @@ public class GestionePrenotazioneControl
             //Lista degli id interi degli ombrelloni
             int[] idOmbrelloniInt = new int[idOmbrelloni.length];
 
-            //Calcolo del costo totale
-            float costo = 30.00F; //=generaCosto(); TODO genera costo
-
-
             //Converto le date da stringa a timestamp
             Timestamp orarioInizioDate = DateFormatter.format(orarioInizio);
             Timestamp orarioFineDate = DateFormatter.format(orarioFine);
+
+            //Calcolo del costo totale
+            float costo = generaCosto(orarioInizioDate, orarioFineDate);
 
             //Converto il flag pagato
             Boolean pagatoBoolean = Boolean.parseBoolean(pagata);
@@ -174,7 +173,6 @@ public class GestionePrenotazioneControl
                 u.setPassword(null);
                 u.setDataRegistrazione(null);
                 u.setRuolo(null);
-                u.setConfermaAccount(null);
 
                 p.setUtente(u);
 
@@ -217,7 +215,9 @@ public class GestionePrenotazioneControl
             for(int i = 0; i < prenotazioni.size(); ++i)
             {
                 Prenotazione p = prenotazioni.get(i);
-
+                Ombrellone o = p.getOmbrellone();
+                o.setPrenotabile(null);
+                p.setOmbrellone(o);
                 p.setUtente(null);
                 prenotazioni.set(i, p);
             }
@@ -235,6 +235,41 @@ public class GestionePrenotazioneControl
             return new Result("Errore, formato data non valido.");
         }
     }
+
+    /**
+     * Metodo che restituisce la lista delle prenotazioni relative ad un utente in una fascia oraria
+     * @param idUtente id dell'utente
+     * @return oggetto Result con lista delle prenotazioni
+     */
+    public static Result elencoPrenotazioniUtente(Integer idUtente)
+    {
+        try
+        {
+
+            List<Prenotazione> prenotazioni = PrenotazioneDao.getPrenotazioniUtente(idUtente);
+
+            //Rimuovo i dettagli dell'utente
+            for(int i = 0; i < prenotazioni.size(); ++i)
+            {
+                Prenotazione p = prenotazioni.get(i);
+                Ombrellone o = p.getOmbrellone();
+                o.setPrenotabile(null);
+                p.setOmbrellone(o);
+                p.setUtente(null);
+                prenotazioni.set(i, p);
+            }
+
+            //Wrapper per far funzionare la xml converter
+            WrapperArrayList<Prenotazione> prenotazioni1 = new WrapperArrayList<>(prenotazioni);
+            return new Result(prenotazioni1, "Prenotazioni");
+        }
+        catch (NoResultException e)
+        {
+            return new Result("Errore, impossibile caricare i dati delle prenotazioni.");
+        }
+
+    }
+
 
     /**
      * Metodo privato che controlla se sono presenti prenotazioni per un dato ombrellone in una data fascia oraria
@@ -302,7 +337,14 @@ public class GestionePrenotazioneControl
 
     }
 
-    public static Result eliminaPrenotazione(String idPrenotazione, Integer idUtente)
+    /**
+     * Metodo per la cancellazione di una prenotazione
+     * @param idPrenotazione id della prenotazione da cancellare
+     * @param idUtente id dell'utente che sta tentando di cancellare la prenotazione
+     * @param privilegiato flag se l'utente può comunque effettuare la cancellazione
+     * @return oggetto Result con esito della cancellazione
+     */
+    public static Result eliminaPrenotazione(String idPrenotazione, Integer idUtente, Boolean privilegiato)
     {
         try
         {
@@ -323,10 +365,16 @@ public class GestionePrenotazioneControl
                 }
                 catch (NoResultException e)
                 {
+                    System.out.println("Non trovata" + id);
                     continue;
                 }
 
-                if (p.getUtente().getIdUtente() == idUtente)
+                if(p.getOrarioInizio().getTime() <= System.currentTimeMillis())
+                {
+                    return new Result("Non puoi annullare una prenotazione passata o in corso.", false);
+                }
+
+                if (p.getUtente().getIdUtente() == idUtente || privilegiato)
                 {
                     PrenotazioneDao.eliminaPrenotazione(p);
                 }
@@ -343,6 +391,32 @@ public class GestionePrenotazioneControl
         {
             return new Result("Errore durante l'eliminazione della prenotazione", false);
         }
+
+    }
+
+    /**
+     * Metodo per il calcolo del costo totale
+     * @param inizio inizio fascia oraria
+     * @param fine fine fascia oraria
+     * @return costo totale in float
+     */
+    private static float generaCosto(Timestamp inizio, Timestamp fine)
+    {
+        final float TARIFFA_ORARIA = 2.0F;
+        final float TARIFFA_MEZZA_GIORNATA = 8.0F;
+        final float TARIFFA_GIORNALIERA = 15.0F;
+
+        long tempo = fine.getTime() - inizio.getTime();
+        tempo = tempo/1000; //secondi
+        tempo = tempo/60;   //minuti
+        tempo = tempo/60;   //ore
+
+        if(tempo == 6)
+            return TARIFFA_MEZZA_GIORNATA;
+        else if(tempo == 12)
+            return TARIFFA_GIORNALIERA;
+        else
+            return tempo * TARIFFA_ORARIA;
 
     }
 
