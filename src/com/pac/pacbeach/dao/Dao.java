@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Classe di base per Data Access Object
- * Viene estesa dalle seingole classi DAO
+ * Viene estesa dalle singole classi DAO
  */
 public class Dao
 {
@@ -55,8 +55,8 @@ public class Dao
     }
 
     /**
-     * Aggiorna un ogetto all'interno del database
-     * @param obj ogetto modificato
+     * Aggiorna un oggetto all'interno del database
+     * @param obj oggetto modificato
      */
     protected static void update(Object obj) throws EntityNotUpdatedException
     {
@@ -104,7 +104,7 @@ public class Dao
      * Recupera una lista di elementi dal database eseguendo una query
      * @param queryString query in HQL (Hibernate Query Language)
      * @param params lista ordinata di parametri della query
-     * @return lista di ogetti richiesti dalla query
+     * @return lista di oggetti richiesti dalla query
      * @throws NoResultException se la query non restituisce alcun risultato
      */
     protected static List get(String queryString, Object ...params) throws NoResultException
@@ -139,8 +139,6 @@ public class Dao
         }
         catch (HibernateException e)
         {
-            //TODO remove
-            e.printStackTrace();
             assert transaction != null;
             transaction.rollback();
             throw new EntityNotDeletedException();

@@ -21,6 +21,14 @@ import java.util.Map;
 
 public class GestioneOrdiniControl
 {
+    /**
+     * Metodo per creare un nuovo ordine
+     * @param idProdotti id dei prodotti dell'ordine separati da virgole
+     * @param consegna flag se l'ordine deve essere consegnato all'ombrellone
+     * @param pagata flag se l'ordine è stato già pagato
+     * @param idUtente id dell'utente che effettua l'ordine
+     * @return oggetto Result con stato della creazione
+     */
     public static Result nuovoOrdine(String idProdotti, String consegna, String pagata, Integer idUtente)
     {
         try
@@ -119,6 +127,11 @@ public class GestioneOrdiniControl
         }
     }
 
+    /**
+     * Metodo che restituisce la lista degli ordini effettuati da un utente
+     * @param idUtente id dell'utente
+     * @return oggetto Result con lista degli ordini dell'utente
+     */
     public static Result listaOrdiniUtente(Integer idUtente)
     {
         try
@@ -148,6 +161,10 @@ public class GestioneOrdiniControl
         }
     }
 
+    /**
+     * Metodo che restituisce la lista degli ordini ancora da consegnare
+     * @return oggetto Result con lista degli ordini
+     */
     public static Result listaOrdiniDaConsegnare()
     {
         try
@@ -167,6 +184,12 @@ public class GestioneOrdiniControl
         }
     }
 
+    /**
+     * Metodo per aggiornare lo stato di un ordine
+     * @param idOrdine id dell'ordine da aggiornare
+     * @param stato nuovo stato da inserire
+     * @return oggetto Result con stato dell'aggiornamento
+     */
     public static Result aggiornaStatoOrdine(String idOrdine, String stato)
     {
         try

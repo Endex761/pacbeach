@@ -15,6 +15,7 @@ public class Logout extends HttpServlet {
         response.setContentType("text/xml");
 
         SessionManager sessionManager = new SessionManager(request);
+
         sessionManager.logout();
 
         Result res = new Result("Logout effettuato con successo");

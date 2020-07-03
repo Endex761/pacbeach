@@ -20,11 +20,11 @@ public class RequestValidator
     }
 
     /**
-     * Funzione che restituisce un parametro della richiesta http
+     * Metodo che restituisce un parametro della richiesta http
      * @param fieldName nome del parametro
      * @param required true se è un campo richiesto
      * @return valore del parametro richiesto
-     * @throws ValidationException Se il parametro è richiesto ma non è presente lancia un eccezione
+     * @throws ValidationException se il parametro è richiesto ma non è presente
      */
     public String getParameter(String fieldName, Boolean required) throws ValidationException
     {
@@ -36,11 +36,26 @@ public class RequestValidator
             return null;
     }
 
+    /**
+     * Metodo che restituisce un parametro della richiesta http
+     * @param fieldName nome del parametro richiesto
+     * @return valore del parametro richiesto
+     * @throws ValidationException se il parametro non è presente
+     */
     public String getParameter(String fieldName) throws ValidationException
     {
         return getParameter(fieldName, true);
     }
 
+    /**
+     * Metodo che restituisce un parametro della richiesta http
+     * @param fieldName nome del parametro
+     * @param required true se è un campo richiesto
+     * @param minLength lunghezza minima del valore
+     * @param maxLength lunghezza massima del valore
+     * @return valore del parametro
+     * @throws ValidationException se il parametro è richiesto ma non è presente
+     */
     public String getParameter(String fieldName, Boolean required, int minLength, int maxLength) throws ValidationException
     {
         String parameter = getParameter(fieldName, required);
@@ -54,6 +69,13 @@ public class RequestValidator
         return parameter;
     }
 
+    /**
+     * Metodo che restituisce un parametro della richiesta http
+     * @param fieldName nome del parametro richiesto
+     * @param maxLength lunghezza massima del valore
+     * @return valore del parametro
+     * @throws ValidationException se il parametro non è presente
+     */
     public String getParameter(String fieldName, int maxLength) throws ValidationException
     {
         return getParameter(fieldName, true, 0, maxLength);

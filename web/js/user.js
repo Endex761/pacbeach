@@ -287,7 +287,7 @@ function logout() {
         url: './api/logout',
         dataType: 'text xml',
         success: function(xml) {
-            window.location.replace('./home.html');
+            window.location.replace('./');
         },
         error: function(data) {
             alert('Oops! Errore inaspettato!');

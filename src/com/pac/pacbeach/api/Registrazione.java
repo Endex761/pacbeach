@@ -13,8 +13,10 @@ import java.io.IOException;
 
 @WebServlet("/api/registrazione")
 public class Registrazione extends HttpServlet {
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/xml");
+
         RequestValidator r = new RequestValidator(request);
 
         Result res;
@@ -34,11 +36,6 @@ public class Registrazione extends HttpServlet {
             res = new Result(e.getMessage(), false);
         }
 
-
         response.getWriter().write(res.toXmlString());
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        doPost(request, response);
     }
 }

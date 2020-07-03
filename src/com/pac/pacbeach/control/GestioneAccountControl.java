@@ -141,6 +141,10 @@ public class GestioneAccountControl
         return new Result("Utente aggiornato con successo.");
     }
 
+    /**
+     * Metodo per generare una password casuale
+     * @return Stringa contenente una nuova password casuale
+     */
     protected static String generaPasswordCasuale()
     {
         //Non implementata in questa versione

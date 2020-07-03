@@ -13,15 +13,14 @@ import java.io.IOException;
 
 @WebServlet("/api/ombrellone")
 public class Ombrellone extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-
-    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/xml");
 
         RequestValidator rv = new RequestValidator(request);
+
         Result res;
+
         try
         {
             String orarioInizio = rv.getParameter("orarioInizio");

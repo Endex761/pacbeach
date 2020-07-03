@@ -65,8 +65,5 @@ public class GestioneOmbrelloniControl
         {
             return new Result("Errore, formato data errato.", false);
         }
-
-
-
     }
 }

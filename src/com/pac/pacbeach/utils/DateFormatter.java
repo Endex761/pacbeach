@@ -13,7 +13,7 @@ public class DateFormatter
 
     /**
      * Trasforma una Stringa nel formato "yyyy-MM-ddTHH:mm:ss" nel relativo Timestamp
-     * @param dateString stringa contentete la data
+     * @param dateString stringa contenente la data
      * @return Timestamp relativo alla data
      * @throws ParseException se il formato della stringa è errato
      */

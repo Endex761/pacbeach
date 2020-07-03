@@ -60,6 +60,7 @@ public class PrenotazioneCassa extends HttpServlet {
         response.setContentType("text/xml");
 
         RequestValidator r = new RequestValidator(request);
+
         SessionManager sessionManager = new SessionManager(request);
 
         Result res;

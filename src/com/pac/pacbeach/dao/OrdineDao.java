@@ -3,11 +3,8 @@ package com.pac.pacbeach.dao;
 import com.pac.pacbeach.exceptions.DuplicatedEntryException;
 import com.pac.pacbeach.exceptions.EntityNotUpdatedException;
 import com.pac.pacbeach.model.Ordine;
-import com.pac.pacbeach.model.Prenotazione;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**

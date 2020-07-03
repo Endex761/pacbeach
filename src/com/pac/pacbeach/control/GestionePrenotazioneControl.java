@@ -112,6 +112,19 @@ public class GestionePrenotazioneControl
         }
     }
 
+    /**
+     * Metodo per la creazione di una nuova prenotazione con dettagli utente non registrato
+     * @param orarioInizio orario di inizio della prenotazione
+     * @param orarioFine orario di fine della prenotazione
+     * @param pagata indica se l'utente ha già pagato la prenotazione
+     * @param ospiti lista degli ospiti dell'ombrellone
+     * @param idOmbrellone id degli ombrelloni da prenotare (separati da ,)
+     * @param nome nome dell'utente che sta prenotando
+     * @param cognome cognome dell'utente che sta prenotando
+     * @param telefono telefono dell'utente che sta prenotando
+     * @param email email dell'utente che sta prenotando
+     * @return oggetto Result con risultato dell'operazione
+     */
     public static Result creaNuovaPrenotazione(String orarioInizio, String orarioFine, String pagata, String ospiti, String idOmbrellone, String nome, String cognome, String telefono, String email)
     {
         Result res;
@@ -141,10 +154,7 @@ public class GestionePrenotazioneControl
             }
         }
 
-
-
         return res;
-
     }
 
     /**
@@ -269,7 +279,6 @@ public class GestionePrenotazioneControl
         }
 
     }
-
 
     /**
      * Metodo privato che controlla se sono presenti prenotazioni per un dato ombrellone in una data fascia oraria
@@ -417,8 +426,5 @@ public class GestionePrenotazioneControl
             return TARIFFA_GIORNALIERA;
         else
             return tempo * TARIFFA_ORARIA;
-
     }
-
-
 }

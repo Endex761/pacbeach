@@ -115,6 +115,5 @@ public class Prenotazione extends HttpServlet {
         }
 
         response.getWriter().write(res.toXmlString());
-
     }
 }

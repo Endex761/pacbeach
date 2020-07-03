@@ -16,9 +16,6 @@ import java.io.IOException;
 
 @WebServlet("/api/prodotto")
 public class Prodotto extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/xml");
@@ -44,6 +41,5 @@ public class Prodotto extends HttpServlet {
         }
 
         response.getWriter().write(res.toXmlString());
-
     }
 }

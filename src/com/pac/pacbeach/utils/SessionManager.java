@@ -10,12 +10,10 @@ import javax.servlet.http.HttpSession;
  */
 public class SessionManager
 {
-    private HttpServletRequest request;
-    private HttpSession session;
+    private final HttpSession session;
 
     public SessionManager(HttpServletRequest request)
     {
-        this.request = request;
         session = request.getSession();
     }
 
@@ -61,7 +59,7 @@ public class SessionManager
 
     /**
      * @return la stringa del ruolo dell'utente loggato (bagnino, utente, barista)
-     * @throws UserNotLoggedInException
+     * @throws UserNotLoggedInException se nessun utente è loggato
      */
     public String getLoggedUserRole() throws  UserNotLoggedInException
     {

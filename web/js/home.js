@@ -14,24 +14,24 @@ $(document).ready(function() {
 
                 switch(message) {
                     case "utente":
-                        $('#usrButtom').attr('href', './user.html');
+                        $('#usrButtom').attr('href', './user');
                             
-                        $('#ticketButton').attr('href', './ticket.html');
+                        $('#ticketButton').attr('href', './ticket');
                         $('#ticketButton').removeAttr('data-toggle');
                         $('#ticketButton').removeAttr('data-target');
     
-                        $('#barButton').attr('href', './bar.html');
+                        $('#barButton').attr('href', './bar');
                         $('#barButton').removeAttr('data-toggle');
                         $('#barButton').removeAttr('data-target');
                         break;
                     case "barista":
-                        window.location.replace('./barista.html');
+                        window.location.replace('./barista');
                         break;
                     case "bagnino":
-                        window.location.replace('./lifeguard.html');
+                        window.location.replace('./lifeguard');
                         break;
                     case "cassiere":
-                        window.location.replace('./cashier.html');
+                        window.location.replace('./cashier');
                         break;
                 }
             }
@@ -187,27 +187,27 @@ $(function() {
 
                     switch(message) {
                         case "utente":
-                            $('#usrButtom').attr('href', './user.html');
+                            $('#usrButtom').attr('href', './user');
     
                             $('#signinup').modal('toggle');
                             $('#successNotify').modal('toggle');
                             
-                            $('#ticketButton').attr('href', './ticket.html');
+                            $('#ticketButton').attr('href', './ticket');
                             $('#ticketButton').removeAttr('data-toggle');
                             $('#ticketButton').removeAttr('data-target');
     
-                            $('#barButton').attr('href', './bar.html');
+                            $('#barButton').attr('href', './bar');
                             $('#barButton').removeAttr('data-toggle');
                             $('#barButton').removeAttr('data-target');
                             break;
                         case "barista":
-                            window.location.replace('./barista.html');
+                            window.location.replace('./barista');
                             break;
                         case "bagnino":
-                            window.location.replace('./lifeguard.html');
+                            window.location.replace('./lifeguard');
                             break;
                         case "cassiere":
-                            window.location.replace('./cashier.html');
+                            window.location.replace('./cashier');
                             break;
                     }
                 } else {

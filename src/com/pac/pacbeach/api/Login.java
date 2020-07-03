@@ -39,6 +39,7 @@ public class Login extends HttpServlet {
         RequestValidator r = new RequestValidator(request);
 
         Result res;
+
         try
         {
             String email = r.getParameter("email");
@@ -72,9 +73,6 @@ public class Login extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        //TODO remove, debug purpose
-        //doPost(request,response);
-
         response.setContentType("text/xml");
 
         SessionManager sessionManager = new SessionManager(request);
@@ -92,8 +90,6 @@ public class Login extends HttpServlet {
             res = new Result("Utente non loggato", false);
         }
 
-
         response.getWriter().write(res.toXmlString());
-
     }
 }

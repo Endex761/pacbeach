@@ -4,7 +4,9 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-//Classe di utilità per la conversione delle date per XML
+/**
+ * Classe di utilità per la conversione delle date per XML
+ */
 public class DateAdapter extends XmlAdapter<String, Date>
 {
     private final String pattern = "yyyy-MM-dd HH:mm:ss";

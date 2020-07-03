@@ -37,7 +37,7 @@ public class HibernateUtils
     }
 
     /**
-     * Funzione che restituisce una sessione di connessioen al DB
+     * Funzione che restituisce una sessione di connessione al DB
      */
     public static Session getSession()
     {
@@ -51,8 +51,7 @@ public class HibernateUtils
         }
         catch (HibernateError he)
         {
-            //TODO remove
-            he.printStackTrace();
+            System.err.println("MySql Server is not running");
         }
 
         return session;

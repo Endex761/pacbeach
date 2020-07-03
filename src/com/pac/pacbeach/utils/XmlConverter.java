@@ -6,7 +6,7 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 
 /**
- * Classe per la conversione degli ogetti in Stringa XML
+ * Classe per la conversione degli oggetti in Stringa XML
  */
 public class XmlConverter
 {
@@ -20,7 +20,7 @@ public class XmlConverter
             //Create Marshaller
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
-            //Required formatting??
+            //Required formatting
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
             //Print XML String to Console

@@ -42,7 +42,4 @@ public class Pagamento extends HttpServlet {
         response.getWriter().write(res.toXmlString());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
 }

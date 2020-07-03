@@ -6,5 +6,4 @@ public class DuplicatedEntryException extends Exception
     {
         super("Duplicated Entry");
     }
-
 }
